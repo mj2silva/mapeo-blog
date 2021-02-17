@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="360.831" height="360.831" viewBox="0 0 360.831 360.831">
+  <g id="Grupo_442" data-name="Grupo 442" transform="translate(-200.049 -766.743)">
+    <g id="Grupo_441" data-name="Grupo 441">
+      <circle id="Elipse_45" data-name="Elipse 45" cx="178.415" cy="178.415" r="178.415" transform="translate(202.049 768.743)" fill="none" stroke="#005797" stroke-miterlimit="10" stroke-width="4"/>
+      <circle id="Elipse_46" data-name="Elipse 46" cx="120.632" cy="120.632" r="120.632" transform="translate(259.832 826.527)" fill="none" stroke="#ffd216" stroke-miterlimit="10" stroke-width="3"/>
+      <circle id="Elipse_47" data-name="Elipse 47" cx="47.229" cy="47.229" r="47.229" transform="translate(333.235 899.929)" fill="none" stroke="#29abe2" stroke-miterlimit="10" stroke-width="3"/>
+      <text id="What" transform="translate(380.464 794.212) rotate(180)" fill="#005797" font-size="22" font-family="Gilroy-ExtraBold, Gilroy" font-weight="800"><tspan x="-28.292" y="0">What</tspan></text>
+      <text id="Why" transform="translate(380.464 953.153)" fill="#005797" font-size="22" font-family="Gilroy-ExtraBold, Gilroy" font-weight="800"><tspan x="-22.891" y="0">Why</tspan></text>
+      <text id="How" transform="translate(451.501 1004.826) rotate(-42.095)" fill="#005797" font-size="22" font-family="Gilroy-ExtraBold, Gilroy" font-weight="800"><tspan x="-22" y="0">How</tspan></text>
+      <text id="How-2" data-name="How" transform="translate(313.323 1009.827) rotate(42.184)" fill="#005797" font-size="22" font-family="Gilroy-ExtraBold, Gilroy" font-weight="800"><tspan x="-22" y="0">How</tspan></text>
+      <text id="How-3" data-name="How" transform="translate(382.896 862.568) rotate(180)" fill="#005797" font-size="22" font-family="Gilroy-ExtraBold, Gilroy" font-weight="800"><tspan x="-22" y="0">How</tspan></text>
+      <text id="What-2" data-name="What" transform="translate(501.473 1049.348) rotate(-47.816)" fill="#005797" font-size="22" font-family="Gilroy-ExtraBold, Gilroy" font-weight="800"><tspan x="-28.292" y="0">What</tspan></text>
+      <text id="What-3" data-name="What" transform="matrix(0.709, 0.705, -0.705, 0.709, 267.104, 1056.771)" fill="#005797" font-size="22" font-family="Gilroy-ExtraBold, Gilroy" font-weight="800"><tspan x="-28.292" y="0">What</tspan></text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,33 @@
+@import 'https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;1,100;1,200;1,300;1,400;1,500&display=swap';
+
+@font-face {
+  font-family: 'Gilroy Light';
+  src: url('/fonts/webfontkit-20210128-110306/gilroy-light-webfont.woff2') format('woff2'),
+       url('/fonts/webfontkit-20210128-110306/gilroy-light-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+@font-face {
+  font-family: 'Ulm Grotesk Regular';
+  src: url('/fonts/webfontkit-20210128-110306/fontsfree-net-ulmgrotesk-regular-31a37af04c031c3123c94d9cced96b6f-webfont.woff2') format('woff2'),
+       url('/fonts/webfontkit-20210128-110306/fontsfree-net-ulmgrotesk-regular-31a37af04c031c3123c94d9cced96b6f-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'Gilroy Bold';
+  src: url('/fonts/webfontkit-20210128-110306/gilroy-extrabold-webfont.woff2') format('woff2'),
+       url('/fonts/webfontkit-20210128-110306/gilroy-extrabold-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+
+}
+
+$montserrat: 'Montserrat', sans-serif;
+$gilroy: 'Gilroy Light', Arial, sans-serif;
+$grotesk: 'Ulm Grotesk Regular', Arial, sans-serif;
+$gilroyBold: 'Gilroy Bold', Arial, sans-serif;

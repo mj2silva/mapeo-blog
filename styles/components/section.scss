@@ -1,0 +1,45 @@
+.section {
+  overflow: hidden;
+  width: 100vw;
+  min-height: calc(100vh - #{$headerHeight});
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  &--with-title {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
+    grid-template-areas:
+      "title title"
+      "column-1 column-2"
+    ;
+  }
+  &__column {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    &--title {
+      grid-area: title;
+    }
+  }
+  @media screen and (max-width: $breakpoint-laptop) {
+    display: flex;
+    min-height: 0;
+    flex-direction: column;
+    &--reversable {
+      flex-direction: column-reverse;
+    }
+    &--reversable-with-title {
+      & .section__column:nth-child(1) {
+        order: 1;
+      }
+      & .section__column:nth-child(2) {
+        order: 3;
+      }
+      & .section__column:nth-child(3) {
+        order: 2;
+      }
+    }
+  }
+}

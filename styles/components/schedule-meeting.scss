@@ -1,0 +1,101 @@
+.schedule-meeting {
+  position: relative;
+  font-family: $gilroyBold;
+  background-color: $darkBlue;
+  color: #ffffff;
+  min-height: 50vh;
+  // Fondo imágenes
+  background-image: url("/img/circulo-lineas-abajo.png"),
+    url("/img/circulo-lineas-arriba.png"),
+    url("/img/linea-larga.png"),
+    url("/img/circulo-fondo.png");
+  background-repeat: no-repeat;
+  background-position: bottom left, top right, 95% 100%, 6% 50%;
+  background-size: 8rem, 10rem, 7rem, 5rem;
+  // Fondo imágenes
+  &__title {
+    max-width: 80%;
+    margin: 3rem;
+    align-self: flex-end;
+    h1 {
+      font-size: 2.5em;
+      text-align: center;
+      margin: 0;
+      & span {
+        font-size: 4rem;
+        display: block;
+        color: $yellow;
+      }
+    }
+  }
+  &__message {
+    margin: 3rem;
+    align-self: flex-start;
+    max-width: 65%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    & p {
+      display: block;
+      margin: 0;
+      font-size: 1.2rem;
+      font-family: $gilroy;
+    }
+  }
+  &__button {
+    margin-top: 1.5rem;
+    min-width: 60%;
+    width: fit-content;
+    font-size: 1.1rem;
+    text-align: center;
+    text-decoration: none;
+    color: $black;
+    background-color: $yellow;
+    font-family: $gilroyBold;
+    &:hover {
+      background-color: $yellowHover
+    }
+  }
+
+  // Media querys
+  @media screen and (max-width: $breakpoint-desktop) {
+    padding: 3rem 0;
+    justify-content: center;
+    &__message {
+        max-width: 50%;
+        & p{
+          font-size: 1.2rem;
+        }
+    }
+    &__title {
+      h1 {
+          font-size: 2em;
+        & span {
+            font-size: 3.4rem;
+        }
+      }
+    }
+  }
+  @media screen and (max-width: $breakpoint-laptop) {
+    &__message, &__title {
+      align-self: initial;
+      margin: 2rem;
+    }
+  }
+  @media screen and (max-width: $breakpoint-tablet) {
+    &__message {
+        max-width: 80%;
+    }
+    &__button {
+        min-width: 90%;
+        box-sizing: border-box;
+    }
+  }
+  @media screen and (max-width: $breakpoint-mobile) {
+    &__title {
+      max-width: 80%;
+    }
+  }
+}

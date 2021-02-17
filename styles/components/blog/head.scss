@@ -1,0 +1,82 @@
+.head {
+  padding: 2rem 3rem;
+  padding-top: 4rem;
+  // Fondo puntitos
+  background-image: url("/img/encabezado.png");
+  background-position: top right;
+  background-repeat: no-repeat;
+  background-size: 15%;
+  // Fin de fondo puntitos
+  &__title {
+    cursor: default;
+    & h1 {
+      font-family: $gilroyBold;
+      font-size: 3rem;
+      color: $blue;
+      margin: 1rem 0;
+    }
+  }
+  &__controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    &-keywords {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      & h3 {
+        cursor: default;
+        margin: 0;
+        font-family: $gilroy;
+        color: $gray;
+        font-size: 1.5em;
+        font-weight: 0;
+      }
+      & ul {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        & li {
+          transition-duration: 500ms;
+          color: $white;
+          border-radius: 8px;
+          padding: .2rem .5rem;
+          margin: .1rem .4rem .1rem 0;
+          display: inline-block;
+          background-color: $gray;
+          font-size: 1.1rem;
+          cursor: pointer;
+          &:hover {
+            background-color: $black;
+          }
+        }
+      }
+    }
+    &-search {
+      & input {
+        font-size: 1.2rem;
+        padding: .4rem .8rem;
+        width: 18rem;
+        border-radius: 8.5px;
+        border-color: $gray;
+        border-width: 2px;
+        border-style: solid;
+        font-family: $gilroy;
+        // Lupa
+        background-image: url("/img/icon-buscar.png");
+        background-repeat: no-repeat;
+        background-position: 95% center;
+        background-size: 1.5rem;
+        // Fin de lupa
+        &:enabled {
+          outline: none;
+        }
+        &::placeholder {
+          font-family: inherit;
+        }
+      }
+    }
+  }
+}

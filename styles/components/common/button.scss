@@ -1,0 +1,17 @@
+.button {
+  max-width: 100%;
+  border-radius: 9px;
+  text-decoration: none;
+  font-size: 1.5rem;
+  color: #ffffff;
+  background-color: $blue;
+  margin: 0;
+  padding: .8rem 1.5rem;
+  border-radius: 9px;
+  transition-duration: 500ms;
+  padding: .8rem 1.5rem;
+  cursor: pointer;
+  &:hover {
+    background-color: $blueHover;
+  }
+}

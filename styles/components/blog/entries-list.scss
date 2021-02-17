@@ -1,0 +1,83 @@
+.blog-entries {
+  &__row {
+    margin: 0 2rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+  &__pagination {
+    ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+      padding: 0;
+      margin: 2rem 0;
+      & li {
+        font-size: 1.2rem;
+        margin: 0 .2rem;
+        color: $blue;
+        transition-duration: 125ms;
+        &:hover {
+          transform: scale(1.2);
+        }
+      }
+    }
+  }
+}
+
+.blog-entrie-link {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  margin: 1rem;
+  margin-top: 0;
+  position: relative;
+  border-radius: 14.5px;
+  overflow: hidden;
+  box-shadow: 4px 4px 4px 0px rgba(0,0,0,0.38);
+  background-color: $white;
+  transition-duration: 500ms;
+  &:hover {
+    z-index: 5;
+    transform: scale(1.05);
+    background-color: $softGray;
+  }
+  &__image {
+    display: flex;
+    & img {
+      width: 100%;
+      height: 16rem;
+      object-fit:cover;
+      object-position: 100% 0
+    }
+  }
+  &__description {
+    margin: 1.5rem 1rem 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    & img {
+      position: absolute;
+      width: 5rem;
+      height: 5rem;
+      align-self: flex-end;
+      margin: -4rem 1rem;
+    }
+  }
+  &__tag {
+    font-size: .7rem;
+    align-self: flex-start;
+    color: $grayText;
+  }
+  &__title {
+    h3 {
+      font-size: 1.17rem;
+      margin: .4rem 0;
+      color: $grayText;
+      font-family: $gilroyBold;
+    }
+  }
+  &__author {
+    color: $grayText;
+    font-size: .8rem;
+  }
+}
