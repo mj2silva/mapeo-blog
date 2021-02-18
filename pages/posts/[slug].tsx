@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState } from 'react';
-import blogPosts from '../../mock/blogPosts';
+import PostRecomendations from '../../components/PostsRecomendations';
+import { blogPosts, recomendedBlogPosts } from '../../mock/blogPosts';
 import BlogEntrie from '../../types/BlogEntrie';
 
 const BlogPost : FC = () => {
@@ -89,6 +90,7 @@ const BlogPost : FC = () => {
             </form>
           </div>
         </section>
+        <PostRecomendations recomendedBlogPosts={recomendedBlogPosts} />
       </main>
     )
   );

@@ -114,6 +114,7 @@
         color: $white;
         background-color: $purple;
         font-size: 1.3rem;
+        min-width: fit-content;
         width: 20%;
         border: none;
         border-radius: 15px;
@@ -140,8 +141,60 @@
         border-width: 2px;
       }
       &::placeholder {
-        font-size: 1rem;
+        font-size: inherit;
         font-family: inherit;
+      }
+    }
+  }
+  @media screen and (max-width: $breakpoint-laptop){
+    &__post {
+      width: 85%;
+      font-size: 1.2rem;
+    }
+    &__title {
+      & h1 {
+        font-size: 2rem;
+      }
+    }
+    &__table-of-contents {
+      padding-left: 4rem;
+    }
+    &__comment-form {
+      & form {
+        & h2 {
+          font-size: 1.5rem;
+        }
+      }
+      &-input {
+        width: 85%;
+        font-size: 1rem;
+      }
+    }
+  }
+  @media screen and (max-width: $breakpoint-tablet){
+    &__post {
+      width: 85%;
+    }
+    &__title {
+      & h1 {
+        font-size: 1.5rem;
+      }
+    }
+    &__table-of-contents {
+      padding-left: 3rem;
+    }
+    &__comment-form {
+      & form {
+        & h2 {
+          font-size: 1.2rem;
+        }
+        & button {
+          width: 100%;
+        }
+      }
+      &-input {
+        width: 85%;
+        font-size: 1rem;
       }
     }
   }

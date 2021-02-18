@@ -79,4 +79,16 @@
       }
     }
   }
+  @media screen and (max-width: $breakpoint-tablet) {
+    &__controls {
+      flex-direction: column;
+      width: 100%;
+      &-search {
+        width: 100%;
+        & input {
+          width: 100%;
+        }
+      }
+    }
+  }
 }

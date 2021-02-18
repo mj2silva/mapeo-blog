@@ -1,10 +1,12 @@
 (function () {
   const appearLeftClass = 'appear_left-animade';
   const appearRightClass = 'appear_right-animade';
+  const appearVibrateClass = 'appear_vibrate-animade';
   const appearHiddenClass = 'appear--hidden';
 
   let appearLeftElements;
   let appearRightElements;
+  let vibrateElements;
   let windowHeight;
 
   let initialized = false;
@@ -13,6 +15,7 @@
     windowHeight = window.innerHeight;
     appearLeftElements = document.getElementsByClassName('appear_left');
     appearRightElements = document.getElementsByClassName('appear_right');
+    vibrateElements = document.getElementsByClassName('appear_vibrate');
     initialized = true;
   };
 
@@ -34,6 +37,7 @@
     if (initialized) {
       insertAnimationToElementList(appearRightElements, appearRightClass);
       insertAnimationToElementList(appearLeftElements, appearLeftClass);
+      insertAnimationToElementList(vibrateElements, appearVibrateClass);
     }
   };
 

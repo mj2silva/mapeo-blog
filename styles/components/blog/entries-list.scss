@@ -22,6 +22,11 @@
       }
     }
   }
+  @media screen and (max-width: $breakpoint-laptop){
+    &__row {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+  }
 }
 
 .blog-entrie-link {
@@ -43,9 +48,12 @@
   }
   &__image {
     display: flex;
+    position: relative;
+    height: 16rem;
+    width: 100%;
     & img {
       width: 100%;
-      height: 16rem;
+      min-height: 10rem;
       object-fit:cover;
       object-position: 100% 0
     }
@@ -79,5 +87,10 @@
   &__author {
     color: $grayText;
     font-size: .8rem;
+  }
+  @media screen and (max-width: $breakpoint-laptop){
+    &__image {
+      height: 14rem;
+    }
   }
 }

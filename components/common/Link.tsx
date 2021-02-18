@@ -5,11 +5,21 @@ type Props = {
   children: ReactNode,
   href: string,
   className?: string,
+  onClick?: (event) => void;
+  tabIndex?: number;
 }
 
-const CustomLink : FC<Props> = ({ children, href, className } : Props) => (
+const CustomLink : FC<Props> = ({
+  children, href, className, onClick, tabIndex,
+} : Props) => (
   <Link href={href}>
-    <a className={className}>
+    <a
+      onClick={onClick}
+      className={className}
+      role="button"
+      tabIndex={tabIndex}
+      onKeyUp={onClick}
+    >
       { children }
     </a>
   </Link>
@@ -17,6 +27,8 @@ const CustomLink : FC<Props> = ({ children, href, className } : Props) => (
 
 CustomLink.defaultProps = {
   className: null,
+  onClick: null,
+  tabIndex: 1,
 };
 
 export default CustomLink;

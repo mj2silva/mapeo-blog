@@ -2,11 +2,11 @@ import { FC, ReactNode } from 'react';
 import BlogEntrieLink from '../components/BlogEntrieLink';
 import ScheduleMeeting from '../components/ScheduleMeeting';
 import BlogEntrie from '../types/BlogEntrie';
-import blogPosts from '../mock/blogPosts';
+import { blogPosts } from '../mock/blogPosts';
 
 const renderBlogLinks = (
   blogPostList: BlogEntrie[],
-) : ReactNode[] => blogPostList.map((blog) => <BlogEntrieLink blogEntrie={blog} />);
+) : ReactNode[] => blogPostList.map((blog) => <BlogEntrieLink key={`blg-link-${blog.slug}`} blogEntrie={blog} />);
 
 const Home: FC = () => (
   <main className="main">

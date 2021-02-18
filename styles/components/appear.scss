@@ -1,0 +1,82 @@
+@keyframes appear-left {
+  from {
+    opacity: 0;
+    transform: translateX(-30%);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes appear-right {
+  from {
+    opacity: 0;
+    transform: translateX(30%);
+    overflow-x: hidden;
+  }
+  to {
+    opacity: 1;
+    overflow-x: hidden;
+  }
+}
+
+@keyframes vibrate {
+  0% {
+    transform: rotate(5deg);
+  }
+  10% {
+    transform: rotate(-5deg);
+  }
+  20% {
+    transform: rotate(5deg);
+  }
+  30% {
+    transform: rotate(-5deg);
+  }
+  40% {
+    transform: rotate(5deg);
+  }
+  50% {
+    transform: rotate(-5deg);
+  }
+  60% {
+    transform: rotate(5deg);
+  }
+  70% {
+    transform: rotate(-5deg);
+  }
+  80% {
+    transform: rotate(5deg);
+  }
+  90% {
+    transform: rotate(-5deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.appear {
+  overflow-x: hidden;
+  &_left {
+    &-animade {
+      animation: appear-left ease 3s;
+      opacity: 100%;
+    }
+  }
+  &_right {
+    &-animade {
+      animation: appear-right ease 3s;
+      opacity: 100%;
+    }
+  }
+  &_vibrate {
+    &-animade {
+      animation: vibrate ease 2s;
+    }
+  }
+  &--hidden {
+    opacity: 0;
+    position: absolute;
+  }
+}

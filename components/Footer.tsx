@@ -37,7 +37,7 @@ const Footer : FC = () => (
               <span>Conversemos, es fácil y rápido</span>
             </h2>
           </div>
-          <CustomLink href="/" className="footer__whatsapp button">
+          <CustomLink href="/" className="appear_vibrate footer__whatsapp button">
             <div className="footer__whatsapp-icon">
               <FontAwesomeIcon icon={faWhatsapp} />
             </div>
