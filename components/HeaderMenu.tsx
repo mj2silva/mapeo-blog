@@ -7,6 +7,8 @@ import CustomLink from './common/Link';
 import HeaderNavLink from './HeaderNavLink';
 import HeaderNavDropDown from './HeaderNavDropDown';
 
+const landingUrl = process.env.NEXT_PUBLIC_LANDING_URL || '';
+
 const HeaderMenu : FC = () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const visibleClassName = 'navigation__list--mobile';
@@ -46,7 +48,7 @@ const HeaderMenu : FC = () => {
             className="navigation__item navigation__item--orange"
             activeClassName="navigation__item--active"
           >
-            <CustomLink href="https://mapeo-landing-page-9xs4f988f.vercel.app/#nosotros" onClick={onClick} tabIndex={-1}>Nosotros</CustomLink>
+            <CustomLink href={`${landingUrl}/#nosotros`} onClick={onClick} tabIndex={-1}>Nosotros</CustomLink>
           </HeaderNavLink>
           <div className="navigation__dropdown">
             <HeaderNavDropDown
@@ -57,10 +59,10 @@ const HeaderMenu : FC = () => {
               text="Soluciones"
             >
               <li className="navigation__dropdown-item">
-                <CustomLink href="https://mapeo-landing-page-9xs4f988f.vercel.app/#marketing" onClick={onClick} tabIndex={-1}>Marketing</CustomLink>
+                <CustomLink href={`${landingUrl}/#marketing`} onClick={onClick} tabIndex={-1}>Marketing</CustomLink>
               </li>
               <li className="navigation__dropdown-item">
-                <CustomLink href="https://mapeo-landing-page-9xs4f988f.vercel.app/#personas" onClick={onClick} tabIndex={-1}>Personas</CustomLink>
+                <CustomLink href={`${landingUrl}/#personas`} onClick={onClick} tabIndex={-1}>Personas</CustomLink>
               </li>
             </HeaderNavDropDown>
           </div>
@@ -70,7 +72,7 @@ const HeaderMenu : FC = () => {
             className="navigation__item navigation__item--skyblue"
             activeClassName="navigation__item--active"
           >
-            <CustomLink href="https://mapeo-landing-page-9xs4f988f.vercel.app/portafolio" onClick={onClick} tabIndex={-1}>Portafolio</CustomLink>
+            <CustomLink href={`${landingUrl}/portafolio`} onClick={onClick} tabIndex={-1}>Portafolio</CustomLink>
           </HeaderNavLink>
           <HeaderNavLink
             tags={['blog']}
@@ -86,7 +88,7 @@ const HeaderMenu : FC = () => {
             className="navigation__item navigation__item--violet"
             activeClassName="navigation__item--active"
           >
-            <CustomLink href="https://mapeo-landing-page-9xs4f988f.vercel.app/#primer-mapeo" onClick={onClick} tabIndex={-1}>Tu primer Mapeo</CustomLink>
+            <CustomLink href={`${landingUrl}/#primer-mapeo`} onClick={onClick} tabIndex={-1}>Tu primer Mapeo</CustomLink>
           </HeaderNavLink>
         </ul>
       </div>
