@@ -7,18 +7,21 @@ type Props = {
   className?: string,
   onClick?: (event) => void;
   tabIndex?: number;
+  isBlank?: boolean;
 }
 
 const CustomLink : FC<Props> = ({
-  children, href, className, onClick, tabIndex,
+  children, href, className, onClick, tabIndex, isBlank,
 } : Props) => (
-  <Link href={href}>
+  <Link href={href} passHref={isBlank}>
     <a
       onClick={onClick}
       className={className}
       role="button"
       tabIndex={tabIndex}
       onKeyUp={onClick}
+      target={(isBlank) ? '_blank' : ''}
+      rel={(isBlank) ? 'noreferrer' : ''}
     >
       { children }
     </a>
@@ -29,6 +32,7 @@ CustomLink.defaultProps = {
   className: null,
   onClick: null,
   tabIndex: 1,
+  isBlank: false,
 };
 
 export default CustomLink;

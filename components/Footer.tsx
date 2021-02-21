@@ -48,13 +48,13 @@ const Footer : FC = () => (
           <div className="footer__social-media-icons">
             <ul>
               <li id="facebook">
-                <CustomLink href="/"><FontAwesomeIcon icon={faFacebookF} /></CustomLink>
+                <CustomLink isBlank href="https://www.facebook.com/mapeo.peru"><FontAwesomeIcon icon={faFacebookF} /></CustomLink>
               </li>
               <li id="instagram">
-                <CustomLink href="/"><FontAwesomeIcon icon={faInstagram} /></CustomLink>
+                <CustomLink isBlank href="https://www.instagram.com/mapeo.pe/"><FontAwesomeIcon icon={faInstagram} /></CustomLink>
               </li>
               <li id="linkedin">
-                <CustomLink href="/"><FontAwesomeIcon icon={faLinkedinIn} /></CustomLink>
+                <CustomLink isBlank href="https://www.linkedin.com/company/mapeoperu/"><FontAwesomeIcon icon={faLinkedinIn} /></CustomLink>
               </li>
               <li id="behance">
                 <CustomLink href="/"><FontAwesomeIcon icon={faBehance} /></CustomLink>

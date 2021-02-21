@@ -21,7 +21,7 @@ const Editor : FC<Props> = (props : Props) => {
   };
 
   useEffect(() => {
-    const initEditor = async () => {
+    const initEditor = async () : Promise<void> => {
       const EditorJS = (await (import('@editorjs/editorjs'))).default;
       const Header = (await import('@editorjs/header')).default;
       const Table = (await import('@editorjs/table')).default;
@@ -31,19 +31,7 @@ const Editor : FC<Props> = (props : Props) => {
       let content = null;
       if (data !== undefined) {
         content = data;
-      } /* else {
-        content = {
-          blocks: [
-            {
-              type: 'header',
-              data: {
-                text: 'Empieza a escribir aquí',
-                level: 2,
-              },
-            },
-          ],
-        };
-      } */
+      }
 
       const newEditor = new EditorJS({
         holder: 'editorjs',
