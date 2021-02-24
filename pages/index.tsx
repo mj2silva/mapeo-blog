@@ -1,4 +1,5 @@
 import { FC, ReactNode } from 'react';
+import Head from 'next/head';
 import BlogEntrieLink from '../components/BlogEntrieLink';
 import ScheduleMeeting from '../components/ScheduleMeeting';
 import BlogEntrie from '../types/BlogEntrie';
@@ -10,6 +11,9 @@ const renderBlogLinks = (
 
 const Home: FC = () => (
   <main className="main">
+    <Head>
+      <title>Blog - Mapeo</title>
+    </Head>
     <section className="head">
       <div className="head__title">
         <h1>Blog</h1>

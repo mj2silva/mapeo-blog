@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState } from 'react';
 import PostRecomendations from '../../components/PostsRecomendations';
@@ -17,6 +18,13 @@ const BlogPost : FC = () => {
   return (
     (!blogPost) ? <div>Loading...</div> : (
       <main className="main">
+        <Head>
+          <title>
+            {blogPost.title}
+            {' '}
+            - Mapeo
+          </title>
+        </Head>
         <section className="head">
           <div className="head__title">
             <h1>Blog</h1>
