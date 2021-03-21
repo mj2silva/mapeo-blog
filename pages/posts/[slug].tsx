@@ -3,10 +3,10 @@ import { useRouter } from 'next/router';
 import { FC, useEffect, useState } from 'react';
 import PostRecomendations from '../../components/PostsRecomendations';
 import { blogPosts, recomendedBlogPosts } from '../../mock/blogPosts';
-import BlogEntrie from '../../types/BlogEntrie';
+import BlogPost from '../../types/BlogPost';
 
-const BlogPost : FC = () => {
-  const [blogPost, setBlogPost] = useState<BlogEntrie>(null);
+const BlogPostPage : FC = () => {
+  const [blogPost, setBlogPost] = useState<BlogPost>(null);
   const router = useRouter();
   const { slug } = router.query;
 
@@ -47,7 +47,7 @@ const BlogPost : FC = () => {
         </section>
         <section className="blogpost__post">
           <div className="blogpost__tag">
-            <h3>{ blogPost.topic }</h3>
+            <h3>Marketing Leaders</h3>
           </div>
           <div className="blogpost__title">
             <h1>
@@ -85,7 +85,7 @@ const BlogPost : FC = () => {
             </div>
           </div>
           <div className="blogpost__content">
-            { (blogPost.parragraphs.map((parragraph) => (<p>{parragraph}</p>))) }
+            { (blogPost.entrie.parragraphs.map((parragraph) => (<p>{parragraph}</p>))) }
           </div>
           <div className="blogpost__comment-form">
             <form>
@@ -104,4 +104,4 @@ const BlogPost : FC = () => {
   );
 };
 
-export default BlogPost;
+export default BlogPostPage;

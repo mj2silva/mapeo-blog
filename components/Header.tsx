@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { FC, useEffect } from 'react';
 import usePage from '../hooks/usePage';
 
@@ -16,7 +17,7 @@ const Header : FC = () => {
     <header className="header" id="header">
       <div className="header__logo">
         <CustomLink href={`${landingUrl}/`}>
-          <img src="/img/logo-mapeo.svg" alt="Logo mapeo" width="92" />
+          <Image src="/img/logo-mapeo.svg" alt="Logo mapeo" width={72} height={72} />
         </CustomLink>
       </div>
       <HeaderMenu />

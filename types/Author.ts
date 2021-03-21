@@ -1,4 +1,5 @@
 interface Author {
+  id?: string,
   name: string,
   photoUrl: string,
   company?: string,

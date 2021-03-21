@@ -1,13 +1,13 @@
 import { FC, ReactNode } from 'react';
-import BlogEntrie from '../types/BlogEntrie';
+import BlogPost from '../types/BlogPost';
 import BlogEntrieLink from './BlogEntrieLink';
 
 const renderBlogLinks = (
-  blogPostList: BlogEntrie[],
-) : ReactNode[] => blogPostList.map((blog) => <BlogEntrieLink key={`blg-link-${blog.slug}`} blogEntrie={blog} />);
+  blogPostList: BlogPost[],
+) : ReactNode[] => blogPostList.map((blog) => <BlogEntrieLink key={`blg-link-${blog.slug}`} post={blog} />);
 
 type Props = {
-  recomendedBlogPosts: BlogEntrie[]
+  recomendedBlogPosts: BlogPost[]
 }
 
 const PostRecomendations : FC<Props> = ({ recomendedBlogPosts } : Props) => (

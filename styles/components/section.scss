@@ -6,7 +6,7 @@
   grid-template-columns: repeat(2, 1fr);
   &--with-title {
     grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: auto;
+    grid-template-rows: minmax(auto, 10rem);
     grid-template-areas:
       "title title"
       "column-1 column-2"
@@ -21,7 +21,13 @@
     max-width: 100%;
     &--title {
       grid-area: title;
+      height: 100%;
+      max-height: 20rem;
+      box-sizing: border-box;
     }
+  }
+  @media screen and (max-width: $breakpoint-desktop) {
+    height: auto;
   }
   @media screen and (max-width: $breakpoint-laptop) {
     display: flex;

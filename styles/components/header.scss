@@ -43,9 +43,11 @@
 @keyframes appear {
   0% {
     opacity: 0%;
+    font-size: 0rem;
   }
   100% {
     opacity: 100%;
+    font-size: initial;
   }
 }
 
@@ -67,6 +69,12 @@
   }
   &__logo {
     margin-left: 2em;
+    & a:focus {
+      outline: none;
+    }
+    @media screen and (max-width: $breakpoint-tablet) {
+      margin-left: 0em;
+    }
   }
   &__menu-icon {
     display: none;
@@ -138,6 +146,7 @@
       justify-content: center;
       align-items: center;
       background-color: $whiteTransparent;
+      overflow: hidden;
       color: $black;
       min-height: 100vh;
       left: -1rem;
@@ -158,11 +167,9 @@
     cursor: pointer;
     font-weight: 500;
     position: relative;
-    @media screen and (min-width: $breakpoint-tablet) {
     animation: appear ease .5s;
-    }
     padding: 1rem;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     & button {
       display: inline-block;
       height: 100%;
@@ -253,7 +260,7 @@
       width: 8em;
       top: 2.5rem;
       left: 0;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       @media screen and (max-width: $breakpoint-mobile) {
         position: relative;
         margin: 0 auto;

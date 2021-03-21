@@ -17,7 +17,7 @@
     max-width: 80%;
     margin: 3rem;
     align-self: flex-end;
-    h1 {
+    h2 {
       font-size: 2.5em;
       text-align: center;
       margin: 0;
@@ -26,6 +26,14 @@
         display: block;
         color: $yellow;
       }
+    }
+    & p {
+      display: block;
+      font-size: 1.2rem;
+      font-family: $gilroy;
+      max-width: 80%;
+      margin: .5rem auto;
+      text-align: center;
     }
   }
   &__message {
@@ -45,9 +53,9 @@
     }
   }
   &__button {
-    margin-top: 1.5rem;
-    min-width: 60%;
-    width: fit-content;
+    margin-top: .5rem;
+    min-width: fit-content;
+    width: 100%;
     font-size: 1.1rem;
     text-align: center;
     text-decoration: none;
@@ -56,6 +64,68 @@
     font-family: $gilroyBold;
     &:hover {
       background-color: $yellowHover
+    }
+  }
+
+  &__contact {
+    height: 100%;
+    min-height: 25rem;
+    max-width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    &-success {
+      &-icon {
+        color: #60ca36;
+        font-size: 10rem;
+      }
+      &-message {
+        text-align: center;
+        font-family: $gilroyBold;
+        font-size: 1.2rem;
+      }
+    }
+  }
+
+  &__form {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    &-error {
+      color: #ff553f;
+      font-size: .8rem;
+      font-family: $gilroyBold;
+      text-align: center;
+      &--form {
+        font-size: 1rem;
+      }
+    }
+  }
+  &__element {
+    width: 100%;
+    &--medium {
+      width: 48%;
+    }
+  }
+  &__input {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: .5rem .5rem;
+    font-family: $gilroy;
+    box-sizing: border-box;
+    border-radius: 8px;
+    background-color: $darkBlue;
+    color: $white;
+    border: $white 1px solid;
+    margin: .3rem 0;
+    font-size: 1rem;
+    &::placeholder {
+      color: $white;
+    }
+    &-text {
+      display: none;
     }
   }
 
@@ -70,7 +140,7 @@
         }
     }
     &__title {
-      h1 {
+      h2 {
           font-size: 2em;
         & span {
             font-size: 3.4rem;
@@ -87,6 +157,14 @@
   @media screen and (max-width: $breakpoint-tablet) {
     &__message {
         max-width: 80%;
+    }
+    &__contact {
+      max-width: 80%;
+    }
+    &__element {
+      &--medium {
+        width: 100%;
+      }
     }
     &__button {
         min-width: 90%;

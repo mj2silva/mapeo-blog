@@ -15,11 +15,13 @@ const Footer : FC = () => (
           </div>
           <div className="footer__contact-info">
             <ul>
-              <li id="email"><a href="mailto:hola@mapeo.pe">hola@mapeo.pe</a></li>
-              <li id="phone"><a href="tel:+51981292611">+51 981 292 611</a></li>
+              <li id="email"><CustomLink href="mailto:hola@mapeo.pe">hola@mapeo.pe</CustomLink></li>
+              <li id="phone"><CustomLink href="tel:+51981292611">+51 981 292 611</CustomLink></li>
               <li id="address1">
-                Calle Los Jazmines 544,
-                <span>Urbanización California, Trujillo.</span>
+                <CustomLink isBlank href="https://g.page/mapeo?share">
+                  Calle Los Jazmines 544,
+                  <span>Urbanización California, Trujillo.</span>
+                </CustomLink>
               </li>
               <li id="address2">
                 Mz. H Alto De La Luna
@@ -37,7 +39,7 @@ const Footer : FC = () => (
               <span>Conversemos, es fácil y rápido</span>
             </h2>
           </div>
-          <CustomLink href="/" className="appear_vibrate footer__whatsapp button">
+          <CustomLink isBlank href="http://bit.ly/ContactoMapeoWeb" className="appear_vibrate footer__whatsapp button">
             <div className="footer__whatsapp-icon">
               <FontAwesomeIcon icon={faWhatsapp} />
             </div>
@@ -57,7 +59,7 @@ const Footer : FC = () => (
                 <CustomLink isBlank href="https://www.linkedin.com/company/mapeoperu/"><FontAwesomeIcon icon={faLinkedinIn} /></CustomLink>
               </li>
               <li id="behance">
-                <CustomLink href="/"><FontAwesomeIcon icon={faBehance} /></CustomLink>
+                <CustomLink isBlank href="https://www.behance.net/mapeosoluciones"><FontAwesomeIcon icon={faBehance} /></CustomLink>
               </li>
             </ul>
           </div>

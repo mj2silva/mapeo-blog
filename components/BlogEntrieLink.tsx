@@ -1,38 +1,38 @@
 import { FC } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import BlogEntrie from '../types/BlogEntrie';
+import BlogPost from '../types/BlogPost';
 
 type Props = {
-  blogEntrie: Partial<BlogEntrie>
+  post: Partial<BlogPost>
 }
 
 const BlogEntrieLink : FC<Props> = (props : Props) => {
-  const { blogEntrie } = props;
+  const { post } = props;
   return (
     <div className="blog-entrie-link">
-      <Link href={`/posts/${blogEntrie.slug}`}>
+      <Link href={`/posts/${post.slug}`}>
         <a>
           <div className="blog-entrie-link__image">
-            <Image src={blogEntrie.coverImageUrl} alt="Post 1" layout="fill" objectFit="cover" objectPosition="center" />
+            <Image src={post.coverImageUrl} alt="Post 1" layout="fill" objectFit="cover" objectPosition="center" />
           </div>
           <div className="blog-entrie-link__description">
-            <img src={blogEntrie.author.photoUrl} alt="post 1 author" width="50" height="50" />
+            <img src={post.author.photoUrl} alt="post 1 author" width="50" height="50" />
             <div className="blog-entrie-link__tag">
-              <span>{blogEntrie.topic}</span>
+              <span>Marketing Leaders (Placeholder para tags)</span>
               {' '}
               -
-              <span className="blog-entrie-link__date">{blogEntrie.publicationDate.toISOString()}</span>
+              <span className="blog-entrie-link__date">{post.publicationDate.toISOString()}</span>
             </div>
             <div className="blog-entrie-link__title">
               <h3>
-                {blogEntrie.title}
+                {post.title}
               </h3>
             </div>
             <div className="blog-entrie-link__author">
               Por
               {' '}
-              <strong>{blogEntrie.author.name}</strong>
+              <strong>{post.author.name}</strong>
             </div>
           </div>
         </a>

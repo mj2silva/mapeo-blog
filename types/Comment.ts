@@ -1,5 +1,5 @@
 interface Comment {
-  id: string | number,
+  id?: string | number,
   email: string,
   text: string,
 }
