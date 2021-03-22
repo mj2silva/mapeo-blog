@@ -4,7 +4,9 @@ import {
 
 interface PageHook {
   username: string,
-  email: string
+  email: string,
+  setUsername,
+  setEmail,
 }
 
 const useSliderContext = () : PageHook => {
@@ -14,6 +16,8 @@ const useSliderContext = () : PageHook => {
   return {
     email,
     username,
+    setUsername,
+    setEmail,
   };
 };
 

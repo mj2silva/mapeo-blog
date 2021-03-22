@@ -1,7 +1,7 @@
 import {
   createContext, Dispatch, FC, ReactNode, SetStateAction,
 } from 'react';
-import usePageContext from '../hooks/usePageContext';
+import usePageContext from '../../hooks/usePageContext';
 
 type PageContextReturn = {
   currentVisible: string,

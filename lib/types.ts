@@ -7,3 +7,9 @@ export type MeetingInfo = {
   subject: string,
   date: Date,
 }
+
+export type User = {
+  id?: string,
+  username: string,
+  email: string,
+}
