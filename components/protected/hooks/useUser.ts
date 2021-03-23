@@ -1,13 +1,14 @@
 import {
   useContext,
 } from 'react';
+import { User } from '../../../lib/types';
 import { UserContext } from '../UserContext';
 
-const useUser = () => {
+const useUser = () : User => {
   const {
     username,
     email,
-  } = useContext(UserContext);
+  } = useContext<User>(UserContext);
 
   return {
     username,

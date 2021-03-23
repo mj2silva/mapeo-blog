@@ -1,0 +1,38 @@
+.internal-dash {
+  width: 80%;
+  margin: 0 auto;
+  &__tabs {
+    display: flex;
+    width: 100%;
+    border-bottom: 1px solid $darkBlue;
+    margin-bottom: 1rem;
+    & ul {
+      width: 100%;
+      display: flex;
+    }
+  }
+  &__tab {
+    list-style: none;
+    min-width: fit-content;
+    width: 15%;
+    display: block;
+    background-color: transparent;
+    font-size: 1rem;
+    font-family: $gilroy;
+    &:hover {
+      font-family: $gilroyBold;
+    }
+    & button {
+      font-family: inherit;
+      font-size: inherit;
+      background-color: inherit;
+      cursor: pointer;
+    }
+    &--selected {
+      font-family: $gilroyBold;
+    }
+  }
+  &__content {
+
+  }
+}

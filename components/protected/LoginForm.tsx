@@ -10,6 +10,8 @@ type SignInData = {
 
 const LoginForm : FC = () => {
   const [formValues, setFormValues] = useState<SignInData>({ email: '', password: '' });
+  const [error, setError] = useState<string>('');
+
   const signin = async () : Promise<void> => {
     const { email, password } = formValues;
     await auth.signInWithEmailAndPassword(email, password);
@@ -24,21 +26,44 @@ const LoginForm : FC = () => {
     event.preventDefault();
     try {
       signin();
-    } catch (error) {
-      alert(error.message);
+    } catch (e) {
+      setError(e.message);
+      // alert(error.message);
     }
   };
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="email">
+    <form className="login-form__form" onSubmit={handleSubmit}>
+      <label className="login-form__element" htmlFor="email">
         Email:
-        <input name="email" type="email" onChange={handleChange} />
+        <input
+          placeholder="hola@mapeo.pe"
+          className="login-form__input"
+          name="email"
+          type="email"
+          onChange={handleChange}
+        />
       </label>
-      <label htmlFor="password">
+      <label className="login-form__element" htmlFor="password">
         Contraseña:
-        <input name="password" type="password" onChange={handleChange} />
+        <input
+          placeholder="*********"
+          className="login-form__input"
+          name="password"
+          type="password"
+          onChange={handleChange}
+        />
       </label>
-      <button type="submit">Iniciar sesión</button>
+      { (error) ? (
+        <div className="login-form__error">
+          Nombre de usuario y/o contraseña inválidos.
+        </div>
+      ) : null }
+      <button
+        className="login-form__button"
+        type="submit"
+      >
+        Iniciar sesión
+      </button>
     </form>
   );
 };

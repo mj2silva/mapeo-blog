@@ -5,6 +5,7 @@ import {
 import useUser from '../hooks/useUser';
 import UserProvider from '../UserContext';
 import Header from './Header';
+import LoadingScreen from '../LoadingScreen';
 
 type Props = {
   children: ReactNode
@@ -20,13 +21,12 @@ const PrivateLayout : FC<Props> = (props: Props) => {
     const isLogin = router.pathname.endsWith('login');
     if (user.username && isLogin) {
       router.push('/internal/home');
-      console.log('redirected to home');
     } else if (!user.username && !isLogin) {
       router.push('/internal/login');
-      console.log('redirected to login');
     } else {
-      setIsLoading(false);
-      console.log('no redirection');
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 3000);
     }
   }, [user, router]);
 
@@ -42,7 +42,7 @@ const PrivateLayout : FC<Props> = (props: Props) => {
           </>
         )
         : (
-          <div>Loading...</div>
+          <LoadingScreen />
         )}
     </UserProvider>
   );

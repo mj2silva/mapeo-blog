@@ -1,0 +1,81 @@
+.login-form {
+  min-height: calc(100vh - #{$internalHeaderHeight});
+  display: flex;
+  flex-direction: column;
+  min-width: 20rem;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  background-color: $darkBlue;
+  color: $white;
+  &__form {
+    width: 30%;
+    min-width: 20rem;
+    color: $white;
+    display: flex;
+    flex-direction: column;
+  }
+  &__element {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  &__input {
+    background-color: $darkBlue;
+    border: solid 1px $white;
+    border-radius: 8px;
+    padding: .5rem;
+    color: $white;
+    font-size: 1.1rem;
+    margin: .5rem 0;
+    &::placeholder {
+      font-family: $gilroy;
+      font-size: 1.1rem;
+    }
+  }
+  &__button {
+    background-color: $yellow;
+    font-family: $gilroyBold;
+    align-self: center;
+    font-size: 1.1rem;
+    padding: .5rem;
+    margin: .5rem 0;
+    border-radius: 8px;
+    transition-duration: 500ms;
+    min-width: 10rem;
+    cursor: pointer;
+    &:hover {
+      background-color: $yellowHover;
+    }
+  }
+  &__no-user-message {
+    width: 30%;
+    min-width: 20rem;
+    font-size: .7rem;
+    text-align: center;
+  }
+  &__no-user-link {
+    font-size: .7rem;
+    color: $gray;
+    &:hover {
+      color: $grayText;
+    }
+  }
+  &__title {
+    cursor: default;
+  }
+  &__message {
+    text-align: center;
+    width: 30%;
+    min-width: 20rem;
+    cursor: default;
+  }
+  &__error {
+    color: $red;
+    width: 100%;
+    min-width: 20rem;
+    font-size: .7rem;
+    text-align: center;
+    cursor: default;
+  }
+}

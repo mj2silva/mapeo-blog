@@ -8,7 +8,7 @@ type UserContextReturn = {
   username: string,
 }
 
-export const UserContext = createContext<UserContextReturn>({ username: 'manuel', email: null });
+export const UserContext = createContext<UserContextReturn>({ username: 'Manuel', email: null });
 
 type Props = {
   children: ReactNode,

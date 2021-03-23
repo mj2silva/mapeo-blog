@@ -1,0 +1,36 @@
+.internal-header {
+  background-color: $darkBlue;
+  height: $internalHeaderHeight;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  &__logo-container {
+    position: relative;
+    width: 7rem;
+    height: 80%;
+  }
+  &__controls {
+    display: flex;
+    flex-direction: row;
+    min-width: fit-content;
+  }
+  &__profile {
+    color: $white;
+    font-size: 1.2rem;
+  }
+  &__button {
+    color: $black;
+    background-color: $yellow;
+    font-size: 1rem;
+    border-radius: 10px;
+    margin: 0 1rem;
+    min-width: 8rem;
+    text-align: center;
+    font-family: $gilroyBold;
+    transition-duration: 500ms;
+    cursor: pointer;
+    &:hover {
+      background-color: $yellowHover;
+    }
+  }
+}

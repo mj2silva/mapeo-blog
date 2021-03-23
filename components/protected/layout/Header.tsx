@@ -15,19 +15,17 @@ const Header : FC<Props> = (props : Props) => {
       </div>
       <div className="internal-header__controls">
         {
-          (user)
+          (user.username)
             ? (
-              <div>
-                <div>
+              <>
+                <div className="internal-header__profile">
                   {user.username}
                 </div>
-                <button type="button">Cerrar sesión</button>
-              </div>
+                <button className="internal-header__button" type="button">Cerrar sesión</button>
+              </>
             )
             : (
-              <div>
-                <button type="button">Iniciar sesión</button>
-              </div>
+              null
             )
         }
       </div>
