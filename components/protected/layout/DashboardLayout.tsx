@@ -4,6 +4,8 @@ import {
 import UserContext from '../../../lib/userContext';
 import CustomLink from '../../common/Link';
 import LoadingScreen from '../LoadingScreen';
+import DashboardNavigation from './DashboardNavigation';
+import DashboardNavLink from './DashboardNavLink';
 
 type Props = {
   children: ReactNode
@@ -18,17 +20,15 @@ const DashboardLayout : FC<Props> = ({ children } : Props) => {
     <main>
       <div className="internal-dash">
         <div className="internal-dash__tabs">
-          <ul>
-            <li className="internal-dash__tab internal-dash__tab--selected">
-              <CustomLink href="/internal/home">Mis posts</CustomLink>
-            </li>
-            <li className="internal-dash__tab">
-              <CustomLink href="/internal/nuevo-post">Crear post</CustomLink>
-            </li>
-            <li className="internal-dash__tab">
-              <CustomLink href="/internal/configuracion">Configuración</CustomLink>
-            </li>
-          </ul>
+          <DashboardNavigation
+            className="internal-dash__tab"
+            activeClassName="internal-dash__tab--selected"
+            navItemsArray={[
+              { displayName: 'Mis Posts', href: '/internal/home' },
+              { displayName: 'Crear Post', href: '/internal/nuevo-post' },
+              { displayName: 'Configuración', href: '/internal/configuracion' },
+            ]}
+          />
         </div>
         <div className="internal-dash__content">
           { children }

@@ -1,32 +1,35 @@
-import Link from 'next/link';
+/* eslint-disable react/jsx-props-no-spreading */
+import Link, { LinkProps } from 'next/link';
 import { FC, ReactNode } from 'react';
 
-type Props = {
+type Props = LinkProps & {
   children: ReactNode,
-  href: string,
   className?: string,
   onClick?: (event) => void;
   tabIndex?: number;
   isBlank?: boolean;
 }
 
-const CustomLink : FC<Props> = ({
-  children, href, className, onClick, tabIndex, isBlank,
-} : Props) => (
-  <Link href={href} passHref={isBlank}>
-    <a
-      onClick={onClick}
-      className={className}
-      role="button"
-      tabIndex={tabIndex}
-      onKeyUp={onClick}
-      target={(isBlank) ? '_blank' : ''}
-      rel={(isBlank) ? 'noreferrer' : ''}
-    >
-      { children }
-    </a>
-  </Link>
-);
+const CustomLink : FC<Props> = (props : Props) => {
+  const {
+    children, href, className, onClick, tabIndex, isBlank,
+  } = props;
+  return (
+    <Link {...props} href={href} passHref={isBlank}>
+      <a
+        onClick={onClick}
+        className={className}
+        role="button"
+        tabIndex={tabIndex}
+        onKeyUp={onClick}
+        target={(isBlank) ? '_blank' : ''}
+        rel={(isBlank) ? 'noreferrer' : ''}
+      >
+        { children }
+      </a>
+    </Link>
+  );
+};
 
 CustomLink.defaultProps = {
   className: null,

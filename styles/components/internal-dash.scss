@@ -1,14 +1,16 @@
 .internal-dash {
-  width: 80%;
-  margin: 0 auto;
+  width: 90%;
+  margin: 1rem auto 0 auto;
   &__tabs {
     display: flex;
-    width: 100%;
     border-bottom: 1px solid $darkBlue;
     margin-bottom: 1rem;
     & ul {
+      padding: 0;
       width: 100%;
       display: flex;
+      margin: 0;
+      height: 3rem;
     }
   }
   &__tab {
@@ -18,9 +20,30 @@
     display: block;
     background-color: transparent;
     font-size: 1rem;
-    font-family: $gilroy;
+    font-family: $gilroyBold;
+    color: $gray;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    text-align: center;
     &:hover {
       font-family: $gilroyBold;
+      color: $black;
+    }
+    &:focus {
+      outline: none;
+    }
+    & a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
+      height: 100%;
+    }
+    & a:focus {
+      outline: none;
     }
     & button {
       font-family: inherit;
@@ -29,7 +52,9 @@
       cursor: pointer;
     }
     &--selected {
-      font-family: $gilroyBold;
+      color: $black;
+      border-bottom: solid 1px $yellow;
+      background-color: $softGray;
     }
   }
   &__content {
