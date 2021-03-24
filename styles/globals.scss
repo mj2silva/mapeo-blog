@@ -21,6 +21,9 @@
 @import "components/appear.scss";
 @import "components/spinner.scss";
 
+// Error pages
+@import "./components/404.scss";
+
 body {
   background-color: #ffffff;
   color: $darkBlack;

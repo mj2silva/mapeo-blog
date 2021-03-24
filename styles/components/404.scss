@@ -1,0 +1,49 @@
+.error404 {
+  min-height: 100vh;
+  background-color: $darkBlue;
+  display: flex;
+  color: $white;
+  justify-content: center;
+  align-items: center;
+  background-image:
+    url("/img/slider-izquierda.png"),
+    url("/img/circulo-lineas-arriba.png"),
+    url("/img/figuras-404.png")
+    ;
+  background-repeat: no-repeat;
+  background-position: left bottom, right top, right bottom;
+  background-size: 12%, 15%, 25%;
+  &__message {
+    width: 50%;
+    min-height: 50vh;
+  }
+  &__error {
+    color: $skyblue;
+    font-family: $gilroyBold;
+    font-size: 3.5rem;
+    margin: .5rem 0;
+    position: relative;
+    &::before {
+      content: '';
+      width: 9rem;
+      height: 100%;
+      position: absolute;
+      background-repeat: repeat-x;
+      background-image: url("/img/equis.png");
+      background-size: contain;
+      left: -10rem;
+    }
+  }
+  &__description {
+    font-family: $gilroy;
+    font-size: 2rem;
+    font-weight: 100;
+    margin: .5rem 0;
+  }
+  &__backlink {
+    color: $skyblueHover;
+    font-family: $gilroy;
+    font-weight: 100;
+    font-size: 1rem;
+  }
+}
