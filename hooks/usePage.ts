@@ -1,7 +1,7 @@
 import {
   useContext,
 } from 'react';
-import { PageContext } from '../components/PageProvider';
+import { PageContext } from '../components/layout/PageProvider';
 
 const usePage = () => {
   const {

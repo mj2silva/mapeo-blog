@@ -46,7 +46,22 @@ const checkCompanyValid = async (company : string) : Promise<boolean> => {
   return !exists;
 };
 
+const checkUsernameExists = async (username : string) : Promise<boolean> => {
+  const ref = firestore.doc(`blogUsernames/${username}`);
+  const { exists } = await ref.get();
+  return !exists;
+};
+
+const signin = async (
+  email : string, password : string,
+) : Promise<firebase.auth.UserCredential> => {
+  const userCredential = await auth.signInWithEmailAndPassword(email, password);
+  return userCredential;
+};
+
 export {
   createNewMeeting,
   checkCompanyValid,
+  checkUsernameExists,
+  signin,
 };

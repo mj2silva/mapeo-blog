@@ -1,8 +1,6 @@
 import { FC, ReactNode } from 'react';
-import Footer from './Footer';
-import Header from './Header';
-import PageProvider from './PageProvider';
-import InternalLayout from '../components/protected/Layout';
+import PrivateLayout from './protected/layout/PrivateLayout';
+import PublicLayout from './layout/PublicLayout';
 
 type Props = {
   children: ReactNode,
@@ -14,21 +12,18 @@ const defaultProps : Partial<Props> = {
 };
 
 const Layout : FC<Props> = ({ children, isPublic } : Props) => (
-  (isPublic) ? (
-    <PageProvider>
-      <Header />
-      <main id="app">
+  (isPublic)
+    ? (
+      <PublicLayout>
         { children }
-      </main>
-      <Footer />
-    </PageProvider>
-  ) : (
-    <>
-      <InternalLayout>
+      </PublicLayout>
+    )
+    : (
+      <PrivateLayout>
         { children }
-      </InternalLayout>
-    </>
-  ));
+      </PrivateLayout>
+    )
+);
 
 Layout.defaultProps = defaultProps;
 

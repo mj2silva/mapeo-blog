@@ -1,25 +1,32 @@
 @import "./common/common.scss";
 
 // Commons
-@import "components/common/button.scss";
+@import "./components/common/button.scss";
 @import "./components/section.scss";
+@import "./components/loading-screen.scss";
 
 // Components
 @import "./components/schedule-meeting.scss";
 
 // Landing
-@import "components/header.scss";
-@import "components/footer.scss";
+@import "./components/header.scss";
+@import "./components/footer.scss";
 
 // Blog
-@import "components/blog/entries-list.scss";
-@import "components/blog/post.scss";
-@import "components/blog/head.scss";
+@import "./components/blog/entries-list.scss";
+@import "./components/blog/post.scss";
+@import "./components/blog/head.scss";
 @import "./components/editor.scss";
 
 // Animations
-@import "components/appear.scss";
-@import "components/spinner.scss";
+@import "./components/appear.scss";
+@import "./components/spinner.scss";
+
+// Internal
+@import "./components/internal-header.scss";
+@import "./components/internal-user-post.scss";
+@import "./components/internal-dash.scss";
+@import "./components/login-form.scss";
 
 // Error pages
 @import "./components/404.scss";
