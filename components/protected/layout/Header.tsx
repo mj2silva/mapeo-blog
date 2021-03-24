@@ -1,27 +1,24 @@
 import Image from 'next/image';
-import { FC } from 'react';
-import { User } from '../../../lib/types';
+import { FC, useContext } from 'react';
+import UserContext from '../../../lib/userContext';
+import SignOutButton from './SignOutButton';
 
-type Props = {
-  user: User,
-}
-
-const Header : FC<Props> = (props : Props) => {
-  const { user } = props;
-  return (
+const Header : FC = () => {
+  const { user, loading } = useContext(UserContext);
+  return !loading && (
     <header className="internal-header">
       <div className="internal-header__logo-container">
         <Image src="/img/logo-mapeo.svg" layout="fill" />
       </div>
       <div className="internal-header__controls">
         {
-          (user.username)
+          (user.uid)
             ? (
               <>
                 <div className="internal-header__profile">
-                  {user.username}
+                  {user.username || ''}
                 </div>
-                <button className="internal-header__button" type="button">Cerrar sesión</button>
+                <SignOutButton />
               </>
             )
             : (

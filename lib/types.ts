@@ -1,3 +1,5 @@
+import firebase from 'firebase';
+
 export type MeetingInfo = {
   id?: string,
   names: string,
@@ -8,8 +10,10 @@ export type MeetingInfo = {
   date: Date,
 }
 
-export type User = {
-  id?: string,
+export type User = firebase.User & {
   username: string,
-  email: string,
 }
+
+export type UserCredential = firebase.auth.UserCredential;
+export type FirebaseUser = firebase.User;
+export type AuthError = firebase.auth.Error;

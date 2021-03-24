@@ -1,6 +1,6 @@
 import { FC } from 'react';
-import Dashboard from '../../components/protected/Dashboard';
+import UserPosts from '../../components/protected/UserPosts';
 
-const Home : FC = () => <Dashboard />;
+const Home : FC = () => <UserPosts />;
 
 export default Home;

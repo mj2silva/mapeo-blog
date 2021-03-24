@@ -1,50 +1,27 @@
-import { useRouter } from 'next/router';
 import {
-  FC, ReactNode, useEffect, useState,
+  FC, ReactNode,
 } from 'react';
-import useUser from '../hooks/useUser';
-import UserProvider from '../UserContext';
+import UserContext from '../../../lib/userContext';
 import Header from './Header';
-import LoadingScreen from '../LoadingScreen';
+import useUserData from '../hooks/useUser';
+import DashboardLayout from './DashboardLayout';
 
 type Props = {
   children: ReactNode
 }
 
-const PrivateLayout : FC<Props> = (props: Props) => {
-  const { children } = props;
-  const user = useUser();
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    const isLogin = router.pathname.endsWith('login');
-    if (user.username && isLogin) {
-      router.push('/internal/home');
-    } else if (!user.username && !isLogin) {
-      router.push('/internal/login');
-    } else {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 3000);
-    }
-  }, [user, router]);
+const PrivateLayout : FC<Props> = ({ children }: Props) => {
+  const userData = useUserData();
 
   return (
-    <UserProvider>
-      { (!isLoading)
-        ? (
-          <>
-            <Header user={user} />
-            <main id="app">
-              { children }
-            </main>
-          </>
-        )
-        : (
-          <LoadingScreen />
-        )}
-    </UserProvider>
+    <UserContext.Provider value={userData}>
+      <>
+        <Header />
+        <DashboardLayout>
+          { children }
+        </DashboardLayout>
+      </>
+    </UserContext.Provider>
   );
 };
 

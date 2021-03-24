@@ -1,7 +1,7 @@
 import {
-  ChangeEvent, FC, FormEvent, useState,
+  ChangeEvent, FC, FormEvent, useContext, useState,
 } from 'react';
-import { auth } from '../../lib/firebase';
+import UserContext from '../../lib/userContext';
 
 type SignInData = {
   email: string,
@@ -10,12 +10,7 @@ type SignInData = {
 
 const LoginForm : FC = () => {
   const [formValues, setFormValues] = useState<SignInData>({ email: '', password: '' });
-  const [error, setError] = useState<string>('');
-
-  const signin = async () : Promise<void> => {
-    const { email, password } = formValues;
-    await auth.signInWithEmailAndPassword(email, password);
-  };
+  const { signInWithEmailAndPassword, error } = useContext(UserContext);
   const handleChange = (event : ChangeEvent<HTMLInputElement>) : void => {
     setFormValues({
       ...formValues,
@@ -24,12 +19,8 @@ const LoginForm : FC = () => {
   };
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) : Promise<void> => {
     event.preventDefault();
-    try {
-      signin();
-    } catch (e) {
-      setError(e.message);
-      // alert(error.message);
-    }
+    const { email, password } = formValues;
+    await signInWithEmailAndPassword(email, password);
   };
   return (
     <form className="login-form__form" onSubmit={handleSubmit}>

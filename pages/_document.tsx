@@ -14,7 +14,6 @@ class MyDocument extends Document {
     return (
       <Html lang="es">
         <Head>
-          <title>Blog - Mapeo</title>
           <script defer src="/animations/animateInViewport.js" />
         </Head>
         <body>
