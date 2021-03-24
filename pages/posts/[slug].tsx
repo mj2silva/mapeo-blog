@@ -85,7 +85,13 @@ const BlogPostPage : FC = () => {
             </div>
           </div>
           <div className="blogpost__content">
-            { (blogPost.entrie.parragraphs.map((parragraph) => (<p>{parragraph}</p>))) }
+            { (blogPost.entrie.parragraphs.map((parragraph, index) => (
+              <p
+                key={parragraph.slice(0, 3) + index.toString()}
+              >
+                {parragraph}
+              </p>
+            ))) }
           </div>
           <div className="blogpost__comment-form">
             <form>

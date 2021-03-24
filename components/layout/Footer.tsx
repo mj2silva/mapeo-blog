@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faWhatsapp, faFacebookF, faInstagram, faBehance, faLinkedinIn,
 } from '@fortawesome/free-brands-svg-icons';
-import CustomLink from './common/Link';
+import CustomLink from '../common/Link';
 
 const Footer : FC = () => (
   <footer className="footer">

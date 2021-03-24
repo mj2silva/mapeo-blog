@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import { FC, useEffect } from 'react';
-import usePage from '../hooks/usePage';
+import usePage from '../../hooks/usePage';
 
-import CustomLink from './common/Link';
-import HeaderMenu from './HeaderMenu';
+import CustomLink from '../common/Link';
+import HeaderMenu from '../HeaderMenu';
 
 const landingUrl = process.env.NEXT_PUBLIC_LANDING_URL || '';
 
