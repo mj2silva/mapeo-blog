@@ -2,10 +2,8 @@ import {
   FC, ReactNode, useContext,
 } from 'react';
 import UserContext from '../../../lib/userContext';
-import CustomLink from '../../common/Link';
 import LoadingScreen from '../LoadingScreen';
 import DashboardNavigation from './DashboardNavigation';
-import DashboardNavLink from './DashboardNavLink';
 
 type Props = {
   children: ReactNode

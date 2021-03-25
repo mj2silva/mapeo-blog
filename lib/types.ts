@@ -12,6 +12,8 @@ export type MeetingInfo = {
 
 export type User = firebase.User & {
   username: string,
+  companyPosition?: string,
+  pictureUrl?: string,
 }
 
 export type UserCredential = firebase.auth.UserCredential;

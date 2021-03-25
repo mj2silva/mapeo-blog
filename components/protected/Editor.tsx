@@ -67,27 +67,21 @@ const Editor : FC<Props> = (props : Props) => {
 
   return (
     <>
-      <h1>Editor</h1>
-      <form className="editor">
-        <label htmlFor="name">
-          <span>Nombre del autor:</span>
-          <input type="text" name="name" />
-        </label>
-        <label htmlFor="authorPhotoUrl">
-          <span>Subir foto:</span>
-          <input type="file" name="authorPhotoUrl" />
-        </label>
-        <label htmlFor="title">
-          <span>Título:</span>
-          <input type="text" name="title" />
-        </label>
-        <label htmlFor="slug">
-          <span>Url personalizada (blog.mapeo.com/post/[tu-url]):</span>
-          <input type="text" name="slug" />
-        </label>
-        <div id="editorjs" key="editor" />
-        <button type="button" onClick={onSave}>Save</button>
-      </form>
+      <div className="editor">
+        <form className="editor__form">
+          <label className="editor__form-input" htmlFor="title">
+            <span>Título del post:</span>
+            <input type="text" name="title" />
+          </label>
+          <label className="editor__form-input" htmlFor="slug">
+            <span>Url personalizada (blog.mapeo.com/post/[tu-url]):</span>
+            <input type="text" name="slug" />
+          </label>
+          <div id="editorjs" key="editor" />
+          <button type="button" onClick={onSave}>Save</button>
+        </form>
+
+      </div>
     </>
   );
 };

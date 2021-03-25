@@ -5,7 +5,7 @@ import debounce from 'lodash.debounce';
 import { checkUsernameExists } from '../../../lib/firebase';
 import UserContext from '../../../lib/userContext';
 
-const UsernameForm : FC = () => {
+const Username : FC = () => {
   const { user } = useContext(UserContext);
 
   const [formValue, setFormValue] = useState(user.username || '');
@@ -45,13 +45,12 @@ const UsernameForm : FC = () => {
   };
   return user.uid && (
     <section>
-      <h3>Ingrese el nombre de usuario que desea usar:</h3>
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="username">
-          Nombre de usuario:
+      <form className="configuration__form" onSubmit={handleSubmit}>
+        <label className="configuration__input" htmlFor="username">
+          <div className="configuration__form-label">Nombre de usuario:</div>
           <input type="text" name="username" onChange={handleChange} value={formValue} />
         </label>
-        <button type="submit" disabled={!isValid}>
+        <button className="configuration__form-button" type="submit" disabled={!isLoading && !isValid}>
           Guardar
         </button>
       </form>
@@ -59,4 +58,4 @@ const UsernameForm : FC = () => {
   );
 };
 
-export default UsernameForm;
+export default Username;
