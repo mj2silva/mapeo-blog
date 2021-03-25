@@ -17,6 +17,9 @@ type UserData = {
 const useUserData = () : UserData => {
   const router = useRouter();
   const [username, setUsername] = useState<string>(null);
+  const [displayName, setDisplayName] = useState<string>(null);
+  const [pictureUrl, setPictureUrl] = useState<string>(null);
+  const [companyPosition, setCompanyPosition] = useState<string>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<AuthError>(null);
   const [user, setUser] = useState<FirebaseUser>(auth.currentUser);
@@ -68,7 +71,11 @@ const useUserData = () : UserData => {
       if (user) {
         const ref = firestore.collection('blogUsers').doc(user.uid);
         unsubscribe = ref.onSnapshot((doc) => {
-          setUsername(doc.data()?.username);
+          const data = doc.data();
+          setUsername(data?.username);
+          setDisplayName(data?.displayName);
+          setCompanyPosition(data?.companyPosition);
+          setPictureUrl(data?.pictureUrl);
           setIsLoading(false);
         });
       } else {
@@ -86,6 +93,9 @@ const useUserData = () : UserData => {
     user: {
       ...user,
       username,
+      displayName,
+      companyPosition,
+      pictureUrl,
     },
     error,
     loading: isLoading,

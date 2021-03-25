@@ -1,0 +1,61 @@
+.configuration {
+  &__form {
+    width: 80%;
+    font-family: $gilroy;
+    display: flex;
+    align-items: center;
+    margin: 0 3rem;
+    &-label {
+      min-width: 15rem;
+      width: 20%;
+      vertical-align: middle;
+    }
+    &-button {
+      height: 2rem;
+      border-radius: 5px;
+      width: 10%;
+      background-color: $softGray;
+      cursor: pointer;
+      transition-duration: 500ms;
+      &:hover {
+        background-color: $gray;
+      }
+      &:disabled {
+        cursor:not-allowed;
+        background-color: $gray;
+      }
+    }
+  }
+  &__input {
+    display: flex;
+    width: 60%;
+    margin: .5rem 0;
+    & input {
+      font-family: inherit;
+      min-width: 10rem;
+      width: 60%;
+      padding: .5rem .3rem;
+      border-radius: 5px;
+      border: solid 1px $darkBlue;
+    }
+    &--file {
+      & input {
+        border-radius: 0;
+        padding: 0;
+        border: none;
+        &::-webkit-file-upload-button {
+          background-color: $yellow;
+          font-family: $gilroy;
+          border: none;
+          border-radius: 8px;
+          padding: .5rem;
+          transition-duration: 500ms;
+          &:hover {
+            background-color: $yellowHover;
+          }
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}

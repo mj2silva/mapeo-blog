@@ -4,12 +4,16 @@
   max-width: 80%;
   margin: 0 auto;
   align-items: center;
-  & label {
+  &__form-input {
     display: flex;
     flex-direction: column;
     min-width: 50%;
     margin: 1rem 0;
+    font-family: $gilroy;
     & input {
+      margin: .3rem 0;
+      font-family: inherit;
+      padding: .5rem .2rem;
       border-radius: 8px;
       border: solid 1px black;
     }

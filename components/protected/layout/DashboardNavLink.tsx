@@ -22,7 +22,6 @@ const DashboardNavLink : FC<Props> = (props : Props) => {
   useEffect(() => {
     if (router.pathname === href) setIsActive(true);
     else setIsActive(false);
-    console.log({ pathname: router.pathname, href });
   }, [router.pathname, href]);
   return (
     <li className={`${className} ${isActive && activeClassName}`}>
