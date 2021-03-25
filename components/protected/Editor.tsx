@@ -5,9 +5,14 @@ enum LogLevels {
 }
 
 type Props = {
-  save: (data) => void,
-  data: []
+  save?: (data) => void,
+  data?: []
 }
+
+const defaultProps = {
+  save: null,
+  data: null,
+};
 
 const Editor : FC<Props> = (props : Props) => {
   const { save, data } = props;
@@ -74,7 +79,7 @@ const Editor : FC<Props> = (props : Props) => {
             <input type="text" name="title" />
           </label>
           <label className="editor__form-input" htmlFor="slug">
-            <span>Url personalizada (blog.mapeo.com/post/[tu-url]):</span>
+            <span>Url personalizada (blog.mapeo.pe/post/[tu-url]):</span>
             <input type="text" name="slug" />
           </label>
           <div id="editorjs" key="editor" />
@@ -85,5 +90,7 @@ const Editor : FC<Props> = (props : Props) => {
     </>
   );
 };
+
+Editor.defaultProps = defaultProps;
 
 export default Editor;
