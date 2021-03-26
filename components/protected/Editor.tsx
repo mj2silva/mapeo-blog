@@ -2,7 +2,9 @@ import { useRouter } from 'next/router';
 import {
   ChangeEventHandler, FC, FormEventHandler, useContext, useEffect, useState,
 } from 'react';
-import { createBlogPost, getBlogPostBySlug, updateBlogPost } from '../../lib/firebase';
+import {
+  createBlogPost, getBlogPostBySlug, updateBlogPost, uploadImage, uploadImageAsync,
+} from '../../lib/firebase';
 import { PostData } from '../../lib/types';
 import UserContext from '../../lib/userContext';
 import Spinner from '../common/Spinner';
@@ -115,6 +117,7 @@ const Editor : FC<Props> = (props : Props) => {
           const Quotes = (await import('@editorjs/quote')).default;
           const List = (await import('@editorjs/list')).default;
           const Embed = (await import('@editorjs/embed')).default;
+          const Image = (await import('@editorjs/image')).default;
 
           const newEditor = new EditorJS({
             autofocus: true,
@@ -137,6 +140,20 @@ const Editor : FC<Props> = (props : Props) => {
                 config: {
                   services: {
                     youtube: true,
+                  },
+                },
+              },
+              image: {
+                class: Image,
+                config: {
+                  uploader: {
+                    uploadByFile: async (file : File) => {
+                      const downloadUrl = await uploadImageAsync(file, `blog/postsImages/${user.uid}/images`);
+                      return {
+                        success: 1,
+                        file: { url: downloadUrl },
+                      };
+                    },
                   },
                 },
               },

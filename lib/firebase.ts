@@ -136,6 +136,16 @@ const uploadImage = (
   return [ref, task];
 };
 
+const uploadImageAsync = async (
+  file: File, filePath: string, fileName: string = null,
+) : Promise<string> => {
+  const extension = file.type.split('/')[1];
+  const ref = storage.ref(`${filePath}/${fileName || Date.now()}.${extension}`);
+  await ref.put(file);
+  const downloadUrl = await ref.getDownloadURL();
+  return downloadUrl;
+};
+
 const updateUserProfilePicture = async (imageUrl: string, userId: string) : Promise<void> => {
   const ref = firestore.doc(`blogUsers/${userId}`);
   await ref.update({
@@ -201,4 +211,5 @@ export {
   uploadImage,
   getBlogPostBySlug,
   updateBlogPost,
+  uploadImageAsync,
 };
