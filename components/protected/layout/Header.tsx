@@ -15,6 +15,9 @@ const Header : FC = () => {
           (user.uid)
             ? (
               <>
+                <div className="internal-header__profile-picture">
+                  {user?.pictureUrl && <Image src={user.pictureUrl} layout="fill" objectFit="contain" />}
+                </div>
                 <div className="internal-header__profile">
                   {user.username || ''}
                 </div>
