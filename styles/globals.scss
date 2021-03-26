@@ -103,3 +103,11 @@ input[type="search"]::-webkit-search-results-decoration {
   background-repeat: no-repeat;
   background-position: center;
 }
+
+.loading-container {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  min-height: 40vh;
+}

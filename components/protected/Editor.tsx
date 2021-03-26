@@ -65,7 +65,7 @@ const Editor : FC<Props> = (props : Props) => {
     setIsLoading(true);
     try {
       const newData = await editor.save();
-      setPostData({
+      const dataToSave = {
         ...postData,
         post: {
           time: new Date(newData.time),
@@ -74,14 +74,13 @@ const Editor : FC<Props> = (props : Props) => {
             version: newData.version,
           },
         },
-      });
+      };
+      setPostData(dataToSave);
       if (postData.id) {
-        console.log({ id: postData.id, postData });
-        await updateBlogPost(postData.id, postData);
+        await updateBlogPost(dataToSave.id, dataToSave);
       } else {
-        console.log('creating new post');
-        await createBlogPost(postData);
-        router.push(`/internal/posts/${postData.slug}`);
+        await createBlogPost(dataToSave);
+        router.push(`/internal/posts/${dataToSave.slug}`);
       }
       await editor.render(newData);
       setError(null);
@@ -157,7 +156,7 @@ const Editor : FC<Props> = (props : Props) => {
       }
     };
     if (initEditor) initEditor();
-  }, [postData, isLoading, editor]);
+  }, [postData, isLoading, editor, holderId]);
 
   return (
     <>
