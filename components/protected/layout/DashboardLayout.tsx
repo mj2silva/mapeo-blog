@@ -22,7 +22,7 @@ const DashboardLayout : FC<Props> = ({ children } : Props) => {
             className="internal-dash__tab"
             activeClassName="internal-dash__tab--selected"
             navItemsArray={[
-              { displayName: 'Mis Posts', href: '/internal/home' },
+              { displayName: 'Mis Posts', href: '/internal/posts' },
               { displayName: 'Crear Post', href: '/internal/nuevo-post' },
               { displayName: 'Configuración', href: '/internal/configuracion' },
             ]}

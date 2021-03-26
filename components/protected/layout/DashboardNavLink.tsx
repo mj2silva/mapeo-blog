@@ -20,7 +20,7 @@ const DashboardNavLink : FC<Props> = (props : Props) => {
 
   const router = useRouter();
   useEffect(() => {
-    if (router.pathname === href) setIsActive(true);
+    if (router.pathname.startsWith(href.toString())) setIsActive(true);
     else setIsActive(false);
   }, [router.pathname, href]);
   return (

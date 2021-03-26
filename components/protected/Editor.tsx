@@ -1,91 +1,190 @@
-import { FC, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import {
+  ChangeEventHandler, FC, FormEventHandler, useContext, useEffect, useState,
+} from 'react';
+import { createBlogPost, getBlogPostBySlug, updateBlogPost } from '../../lib/firebase';
+import { PostData } from '../../lib/types';
+import UserContext from '../../lib/userContext';
+import Spinner from '../common/Spinner';
 
 enum LogLevels {
   ERROR = 'ERROR'
 }
 
 type Props = {
-  save?: (data) => void,
-  data?: []
+  postSlug?: string,
 }
 
-const defaultProps = {
-  save: null,
-  data: null,
+const defaultProps : Partial<Props> = {
+  postSlug: null,
 };
 
 const Editor : FC<Props> = (props : Props) => {
-  const { save, data } = props;
+  const { postSlug } = props;
+  const { user } = useContext(UserContext);
   const [editor, setEditor] = useState(null);
+  const [error, setError] = useState(null);
+  const router = useRouter();
+  const [holderId] = useState(new Date().getTime().toString());
+  const [postData, setPostData] = useState<PostData>({
+    authorUId: user.uid,
+    post: {
+      time: new Date(),
+      blocks: null,
+      editorInfo: {
+        version: null,
+      },
+    },
+    slug: '',
+    createdDate: null,
+    isPublic: false,
+    title: '',
+  });
+  const [isLoading, setIsLoading] = useState(true);
 
-  const onSave = async () : Promise<void> => {
-    const newData = await editor.save();
-    if (save) save(newData);
-    console.log({ editordata: newData });
+  useEffect(() => {
+    const getInitialPost = async () : Promise<void> => {
+      if (postSlug) {
+        setIsLoading(true);
+        try {
+          const actualPostData = await getBlogPostBySlug(postSlug);
+          setPostData(actualPostData);
+          setIsLoading(false);
+        } catch (err) {
+          router.push('/internal/nuevo-post');
+        }
+      } else {
+        setIsLoading(false);
+      }
+    };
+    getInitialPost();
+  }, [postSlug, router]);
+
+  const onSave : FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault();
+    setIsLoading(true);
+    try {
+      const newData = await editor.save();
+      setPostData({
+        ...postData,
+        post: {
+          time: new Date(newData.time),
+          blocks: newData.blocks,
+          editorInfo: {
+            version: newData.version,
+          },
+        },
+      });
+      if (postData.id) {
+        console.log({ id: postData.id, postData });
+        await updateBlogPost(postData.id, postData);
+      } else {
+        console.log('creating new post');
+        await createBlogPost(postData);
+        router.push(`/internal/posts/${postData.slug}`);
+      }
+      await editor.render(newData);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    }
+    setIsLoading(false);
+  };
+
+  const handleChange : ChangeEventHandler<HTMLInputElement> = async (event) => {
+    setPostData({
+      ...postData,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleCheckedChange : ChangeEventHandler<HTMLInputElement> = async (event) => {
+    setPostData({
+      ...postData,
+      [event.target.name]: event.target.checked,
+    });
   };
 
   useEffect(() => {
     const initEditor = async () : Promise<void> => {
-      const EditorJS = (await (import('@editorjs/editorjs'))).default;
-      const Header = (await import('@editorjs/header')).default;
-      const Table = (await import('@editorjs/table')).default;
-      const Quotes = (await import('@editorjs/quote')).default;
-      const List = (await import('@editorjs/list')).default;
-      const Embed = (await import('@editorjs/embed')).default;
-      let content = null;
-      if (data !== undefined) {
-        content = data;
-      }
+      if (editor === null) {
+        if (!isLoading) {
+          setIsLoading(true);
+          const EditorJS = (await (import('@editorjs/editorjs'))).default;
+          const Header = (await import('@editorjs/header')).default;
+          const Table = (await import('@editorjs/table')).default;
+          const Quotes = (await import('@editorjs/quote')).default;
+          const List = (await import('@editorjs/list')).default;
+          const Embed = (await import('@editorjs/embed')).default;
 
-      const newEditor = new EditorJS({
-        holder: 'editorjs',
-        logLevel: LogLevels.ERROR,
-        tools: {
-          header: {
-            class: Header,
-            inlineToolbar: true,
-          },
-          table: {
-            class: Table,
-            inlineToolbar: true,
-          },
-          quote: Quotes,
-          list: List,
-          embed: {
-            class: Embed,
-            inlineToolbar: true,
-            config: {
-              services: {
-                youtube: true,
+          const newEditor = new EditorJS({
+            autofocus: true,
+            holder: holderId,
+            logLevel: LogLevels.ERROR,
+            tools: {
+              header: {
+                class: Header,
+                inlineToolbar: true,
+              },
+              table: {
+                class: Table,
+                inlineToolbar: true,
+              },
+              quote: Quotes,
+              list: List,
+              embed: {
+                class: Embed,
+                inlineToolbar: true,
+                config: {
+                  services: {
+                    youtube: true,
+                  },
+                },
               },
             },
-          },
-        },
-        placeholder: 'Empieza a editar tu blog!',
-        data: content,
-      });
+            placeholder: 'Empieza a editar tu post!',
+            data: {
+              time: postData.post.time.getTime(),
+              blocks: postData.post.blocks,
+            },
+            onReady: () => {
+              setIsLoading(false);
+            },
+          });
 
-      setEditor(newEditor);
+          setEditor(newEditor);
+        }
+      }
     };
-    initEditor();
-  }, [data]);
+    if (initEditor) initEditor();
+  }, [postData, isLoading, editor]);
 
   return (
     <>
       <div className="editor">
-        <form className="editor__form">
+        <form onSubmit={onSave} className="editor__form">
           <label className="editor__form-input" htmlFor="title">
             <span>Título del post:</span>
-            <input type="text" name="title" />
+            <input value={postData.title || ''} onChange={handleChange} type="text" name="title" required />
           </label>
           <label className="editor__form-input" htmlFor="slug">
             <span>Url personalizada (blog.mapeo.pe/post/[tu-url]):</span>
-            <input type="text" name="slug" />
+            <input value={postData.slug || ''} onChange={handleChange} type="text" name="slug" />
           </label>
-          <div id="editorjs" key="editor" />
-          <button type="button" onClick={onSave}>Save</button>
+          <label className="editor__form-input editor__form-input--checkbox" htmlFor="isPublic">
+            <span>Publicar</span>
+            <input onChange={handleCheckedChange} type="checkbox" name="isPublic" />
+          </label>
+          { isLoading ? <div id={holderId} className="editorjs editor--loading"><Spinner /></div> : <div id={holderId} className="editorjs" /> }
+          { error && (
+          <div className="editor__error">
+            Hubo un error al guardar el post:
+            {' '}
+            {error}
+          </div>
+          ) }
+          <button className="editor__button" type="submit">Guardar post</button>
         </form>
-
       </div>
     </>
   );

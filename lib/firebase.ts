@@ -2,7 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
-import { MeetingInfo } from './types';
+import { MeetingInfo, PostData } from './types';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCIaCBF3zDOpPxWu52AGiXb_1iZYm-_bJY',
@@ -21,6 +21,7 @@ if (!firebase.apps.length) {
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 export const storage = firebase.storage();
+export const { STATE_CHANGED } = firebase.storage.TaskEvent;
 
 const createNewMeeting = async (meetingInfo : MeetingInfo) : Promise<void> => {
   const meetingsRef = firestore.collection('reunionesProgramadas');
@@ -59,9 +60,145 @@ const signin = async (
   return userCredential;
 };
 
+const getBlogPost = async (postId: string) : Promise<PostData> => {
+  const ref = firestore.collection('blogPosts');
+  const post = await ref.doc(postId).get();
+  const data = post.data();
+  const postData : PostData = {
+    id: post.id,
+    authorUId: data.autorId,
+    createdDate: data.fechaDeCreacion,
+    post: {
+      blocks: data.post,
+      editorInfo: data.metadata?.editorInfo?.version,
+    },
+    slug: data.slug,
+    isPublic: data.publicado,
+    title: data.titulo,
+  };
+  return postData;
+};
+
+const getUserBlogPosts = async (uid: string) : Promise<PostData[]> => {
+  const ref = firestore.collection('blogPosts');
+  const posts = await ref.where('autorId', '==', uid).get();
+  const postsData : PostData[] = [];
+  posts.forEach((post) => {
+    const data = post?.data();
+    const postData : PostData = {
+      id: post.id,
+      authorUId: data?.autorId,
+      createdDate: data?.fechaDeCreacion,
+      post: {
+        blocks: data?.post,
+        editorInfo: data?.metadata?.editorInfo?.version,
+      },
+      slug: data?.slug,
+      isPublic: data?.publicado || false,
+      title: data?.titulo,
+    };
+    postsData.push(postData);
+  });
+  return postsData;
+};
+
+// Blog
+const createBlogPost = async (postData: PostData) : Promise<void> => {
+  const ref = firestore.collection('blogPosts');
+  const blogPost = {
+    autorId: postData.authorUId,
+    fechaDeCreacion: postData.createdDate || new Date(),
+    fechaDeActualizacion: postData.post.time || new Date(),
+    post: {
+      ...postData.post.blocks,
+    },
+    slug: postData.slug,
+    metadata: {
+      editorInfo: {
+        version: postData.post.editorInfo?.version,
+      },
+    },
+    publicado: postData.isPublic || false,
+    titulo: postData.title,
+  };
+  const blogPostDoc = ref.doc();
+  const batch = firestore.batch();
+  batch.set(blogPostDoc, blogPost);
+  await batch.commit();
+};
+
+const uploadImage = (
+  file: File, filePath: string, fileName: string = null,
+) : [firebase.storage.Reference, firebase.storage.UploadTask] => {
+  const extension = file.type.split('/')[1];
+  const ref = storage.ref(`${filePath}/${fileName || Date.now()}.${extension}`);
+  const task = ref.put(file);
+  return [ref, task];
+};
+
+const updateUserProfilePicture = async (imageUrl: string, userId: string) : Promise<void> => {
+  const ref = firestore.doc(`blogUsers/${userId}`);
+  await ref.update({
+    photoUrl: imageUrl,
+  });
+};
+
+const getBlogPostBySlug = async (slug: string) : Promise<PostData> => {
+  const ref = firestore.collection('blogPosts');
+  const posts = await ref.where('slug', '==', slug).limit(1).get();
+  const postsData = [];
+  posts.forEach((post : firebase.firestore.QueryDocumentSnapshot) => {
+    const data = post.data();
+    const postData : PostData = {
+      id: post.id,
+      authorUId: data.autorId,
+      createdDate: data.fechaDeCreacion,
+      post: {
+        blocks: Object.keys(data.post).map((key) => data.post[key]),
+        time: new Date(data.fechaDeActualizacion),
+        editorInfo: data.metadata?.editorInfo?.version,
+      },
+      slug: data.slug,
+      isPublic: data.publicado,
+      title: data.titulo,
+    };
+    postsData.push(postData);
+  });
+  return postsData[0];
+};
+
+const updateBlogPost = async (postId: string, postData: Partial<PostData>) : Promise<void> => {
+  const ref = firestore.collection('blogPosts');
+  const blogPost = {
+    fechaDeActualizacion: new Date(postData.post.time) || new Date(),
+    post: {
+      ...postData.post.blocks,
+    },
+    slug: postData.slug,
+    metadata: {
+      editorInfo: {
+        version: postData.post.editorInfo?.version,
+      },
+    },
+    publicado: postData.isPublic || false,
+    titulo: postData.title,
+  };
+  const blogPostDoc = ref.doc(postId);
+  const batch = firestore.batch();
+  batch.update(blogPostDoc, blogPost);
+  await batch.commit();
+};
+
 export {
   createNewMeeting,
   checkCompanyValid,
   checkUsernameExists,
+  createBlogPost,
   signin,
+  getBlogPost,
+  getUserBlogPosts,
+  updateUserProfilePicture,
+  uploadImage,
+  getBlogPostBySlug,
+  updateBlogPost,
 };

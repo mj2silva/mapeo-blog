@@ -12,7 +12,12 @@ const DashboardNavigation : FC<Props> = (props: Props) => {
   return (
     <ul>
       {(navItemsArray.map((item) => (
-        <DashboardNavLink className={className} activeClassName={activeClassName} href={item.href}>
+        <DashboardNavLink
+          key={item.href}
+          className={className}
+          activeClassName={activeClassName}
+          href={item.href}
+        >
           { item.displayName }
         </DashboardNavLink>
       )))}

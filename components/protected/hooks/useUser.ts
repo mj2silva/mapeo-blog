@@ -75,7 +75,7 @@ const useUserData = () : UserData => {
           setUsername(data?.username);
           setDisplayName(data?.displayName);
           setCompanyPosition(data?.companyPosition);
-          setPictureUrl(data?.pictureUrl);
+          setPictureUrl(data?.photoUrl);
           setIsLoading(false);
         });
       } else {

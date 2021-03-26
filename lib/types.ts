@@ -10,6 +10,34 @@ export type MeetingInfo = {
   date: Date,
 }
 
+export type PostBlock = {
+  type: 'header' | 'quote' | 'paragraph' | 'table',
+  data: {
+    text?: string,
+    caption?: string,
+    alignment?: string,
+    level?: number,
+  }
+}
+
+export type Post = {
+  blocks: PostBlock[],
+  time?: Date,
+  editorInfo?: {
+    version?: string,
+  }
+}
+
+export type PostData = {
+  id?: string,
+  title: string,
+  authorUId: string,
+  post: Post,
+  slug?: string,
+  createdDate?: Date,
+  isPublic?: boolean,
+}
+
 export type User = firebase.User & {
   username: string,
   companyPosition?: string,
