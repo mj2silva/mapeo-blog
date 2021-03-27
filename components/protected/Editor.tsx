@@ -2,10 +2,13 @@ import { useRouter } from 'next/router';
 import {
   ChangeEventHandler, FC, FormEventHandler, useContext, useEffect, useState,
 } from 'react';
-import { createBlogPost, getBlogPostBySlug, updateBlogPost } from '../../lib/firebase';
+import {
+  createBlogPost, getBlogPostBySlug, updateBlogPost, uploadImageAsync,
+} from '../../lib/firebase';
 import { PostData } from '../../lib/types';
 import UserContext from '../../lib/userContext';
-import Spinner from '../common/Spinner';
+import Spinner, { SpinnerColors } from '../common/Spinner';
+import Metatags from './Metatags';
 
 enum LogLevels {
   ERROR = 'ERROR'
@@ -111,10 +114,10 @@ const Editor : FC<Props> = (props : Props) => {
           setIsLoading(true);
           const EditorJS = (await (import('@editorjs/editorjs'))).default;
           const Header = (await import('@editorjs/header')).default;
-          const Table = (await import('@editorjs/table')).default;
           const Quotes = (await import('@editorjs/quote')).default;
           const List = (await import('@editorjs/list')).default;
           const Embed = (await import('@editorjs/embed')).default;
+          const Image = (await import('../../lib/ImageEditor/bundle')).default;
 
           const newEditor = new EditorJS({
             autofocus: true,
@@ -125,11 +128,13 @@ const Editor : FC<Props> = (props : Props) => {
                 class: Header,
                 inlineToolbar: true,
               },
-              table: {
-                class: Table,
-                inlineToolbar: true,
+              quote: {
+                class: Quotes,
+                config: {
+                  quotePlaceholder: 'Ingresa una cita de autor',
+                  captionPlaceholder: 'Ingresa la fuente y/o autor',
+                },
               },
-              quote: Quotes,
               list: List,
               embed: {
                 class: Embed,
@@ -137,6 +142,22 @@ const Editor : FC<Props> = (props : Props) => {
                 config: {
                   services: {
                     youtube: true,
+                  },
+                },
+              },
+              image: {
+                class: Image,
+                config: {
+                  buttonContent: 'Selecciona una imagen',
+                  captionPlaceholder: 'Ingresa el título de la imagen',
+                  uploader: {
+                    uploadByFile: async (file : File) => {
+                      const downloadUrl = await uploadImageAsync(file, `blog/postsImages/${user.uid}/images`);
+                      return {
+                        success: 1,
+                        file: { url: downloadUrl },
+                      };
+                    },
                   },
                 },
               },
@@ -156,11 +177,14 @@ const Editor : FC<Props> = (props : Props) => {
       }
     };
     if (initEditor) initEditor();
-  }, [postData, isLoading, editor, holderId]);
+  }, [postData, isLoading, editor, holderId, user]);
 
   return (
     <>
       <div className="editor">
+        { postSlug
+          ? <Metatags title={`Editar post | ${postData.title}`} />
+          : <Metatags title={`Nuevo post | ${user.username}`} />}
         <form onSubmit={onSave} className="editor__form">
           <label className="editor__form-input" htmlFor="title">
             <span>Título del post:</span>
@@ -174,7 +198,7 @@ const Editor : FC<Props> = (props : Props) => {
             <span>Publicar</span>
             <input onChange={handleCheckedChange} type="checkbox" name="isPublic" />
           </label>
-          { isLoading ? <div id={holderId} className="editorjs editor--loading"><Spinner /></div> : <div id={holderId} className="editorjs" /> }
+          <div id={holderId} className="editorjs" />
           { error && (
           <div className="editor__error">
             Hubo un error al guardar el post:
@@ -182,7 +206,9 @@ const Editor : FC<Props> = (props : Props) => {
             {error}
           </div>
           ) }
-          <button className="editor__button" type="submit">Guardar post</button>
+          { (isLoading)
+            ? <div className="loading-button"><Spinner color={SpinnerColors.yellow} width={20} height={20} /></div>
+            : <button disabled={isLoading} className="editor__button" type="submit">Guardar post</button>}
         </form>
       </div>
     </>

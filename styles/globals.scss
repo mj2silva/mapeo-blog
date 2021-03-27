@@ -110,4 +110,13 @@ input[type="search"]::-webkit-search-results-decoration {
   align-content: center;
   justify-content: center;
   min-height: 40vh;
+  width: 100%;
+}
+
+.loading-button {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  min-height: 2rem;
 }
