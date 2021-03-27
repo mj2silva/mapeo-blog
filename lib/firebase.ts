@@ -170,7 +170,7 @@ const getBlogPostBySlug = async (slug: string) : Promise<PostData> => {
 const updateBlogPost = async (postId: string, postData: Partial<PostData>) : Promise<void> => {
   const ref = firestore.collection('blogPosts');
   const blogPost = {
-    fechaDeActualizacion: new Date(postData.post.time) || new Date(),
+    fechaDeActualizacion: postData.post.time || new Date(),
     post: {
       ...postData.post.blocks,
     },
