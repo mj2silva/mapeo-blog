@@ -1,6 +1,28 @@
 .user-posts {
   width: 80%;
   margin: 0 auto;
+  &__error {
+    color: $red;
+    text-align: center;
+  }
+  &__no-posts {
+    width: 100%;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    font-size: 2rem;
+    font-family: $gilroy;
+    margin: 2rem 0;
+    min-height: 60vh;
+    cursor: default;
+    &-link {
+      color: $yellow;
+      outline: none;
+      &:hover {
+        color: $yellowHover;
+      }
+    }
+  }
 }
 .user-post {
   border: solid 1px $darkBlue;
@@ -10,18 +32,28 @@
   display: block;
   cursor: pointer;
   transition-duration: 500ms;
-  &:hover &__title {
+  &:hover &__header {
     background-color: $blueHover;
   }
-  &__title {
+  &__header {
     font-size: 1.3rem;
     margin: 0;
     margin-bottom: .5rem;
-    background-color: $darkBlue;
     color: $white;
     padding: .5rem;
     border-radius: 8px;
     transition-duration: 500ms;
+    display: flex;
+    justify-content: space-between;
+    background-color: $darkBlue;
+  }
+  &__title {
+    background-color: inherit;
+    font-size: 1.3rem;
+    margin: 0;
+    color: $white;
+    padding: 0;
+    border-radius: 8px;
   }
   &__summary {
     font-family: $gilroy;
@@ -29,5 +61,15 @@
   }
   &__date {
     font-size: .8rem;
+  }
+  &__delete {
+    background-color: $red;
+    color: $white;
+    cursor: pointer;
+    padding: .3rem .5rem;
+    font-size: 1.4rem;
+    &:hover {
+      background-color: red;
+    }
   }
 }

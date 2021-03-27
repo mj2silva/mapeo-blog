@@ -1,9 +1,11 @@
 import { FC } from 'react';
 import CustomLink from '../../components/common/Link';
 import LoginForm from '../../components/protected/LoginForm';
+import Metatags from '../../components/protected/Metatags';
 
 const Login : FC = () => (
   <main>
+    <Metatags title="Iniciar sesión | Mapeo" />
     <div className="login-form">
       <h1 className="login-form__title">Bienvenido</h1>
       <p className="login-form__message">Para continuar, por favor ingresa tus credenciales de acceso</p>
