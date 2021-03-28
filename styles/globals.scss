@@ -1,12 +1,17 @@
+
 @import "./common/common.scss";
 
-// Commons
+// Common components
 @import "./components/common/button.scss";
+@import "./components/common/link.scss";
 @import "./components/section.scss";
 @import "./components/loading-screen.scss";
 
 // Components
 @import "./components/schedule-meeting.scss";
+
+// Alert
+@import "./components/alert.scss";
 
 // Landing
 @import "./components/header.scss";

@@ -108,75 +108,75 @@ const Editor : FC<Props> = (props : Props) => {
   };
 
   useEffect(() => {
+    let destroyEditor = null;
     const initEditor = async () : Promise<void> => {
-      if (editor === null) {
-        if (!isLoading) {
-          setIsLoading(true);
-          const EditorJS = (await (import('@editorjs/editorjs'))).default;
-          const Header = (await import('@editorjs/header')).default;
-          const Quotes = (await import('@editorjs/quote')).default;
-          const List = (await import('@editorjs/list')).default;
-          const Embed = (await import('@editorjs/embed')).default;
-          const Image = (await import('../../lib/ImageEditor/bundle')).default;
+      if (editor === null && !isLoading) {
+        setIsLoading(true);
+        const EditorJS = (await (import('@editorjs/editorjs'))).default;
+        const Header = (await import('@editorjs/header')).default;
+        const Quotes = (await import('@editorjs/quote')).default;
+        const List = (await import('@editorjs/list')).default;
+        const Embed = (await import('@editorjs/embed')).default;
+        const Image = (await import('../../lib/ImageEditor/bundle')).default;
 
-          const newEditor = new EditorJS({
-            autofocus: true,
-            holder: holderId,
-            logLevel: LogLevels.ERROR,
-            tools: {
-              header: {
-                class: Header,
-                inlineToolbar: true,
+        const newEditor = new EditorJS({
+          autofocus: true,
+          holder: holderId,
+          logLevel: LogLevels.ERROR,
+          tools: {
+            header: {
+              class: Header,
+              inlineToolbar: true,
+            },
+            quote: {
+              class: Quotes,
+              config: {
+                quotePlaceholder: 'Ingresa una cita de autor',
+                captionPlaceholder: 'Ingresa la fuente y/o autor',
               },
-              quote: {
-                class: Quotes,
-                config: {
-                  quotePlaceholder: 'Ingresa una cita de autor',
-                  captionPlaceholder: 'Ingresa la fuente y/o autor',
+            },
+            list: List,
+            embed: {
+              class: Embed,
+              inlineToolbar: true,
+              config: {
+                services: {
+                  youtube: true,
                 },
               },
-              list: List,
-              embed: {
-                class: Embed,
-                inlineToolbar: true,
-                config: {
-                  services: {
-                    youtube: true,
+            },
+            image: {
+              class: Image,
+              config: {
+                buttonContent: 'Selecciona una imagen',
+                captionPlaceholder: 'Ingresa el título de la imagen',
+                uploader: {
+                  uploadByFile: async (file : File) => {
+                    const downloadUrl = await uploadImageAsync(file, `blog/postsImages/${user.uid}/images`);
+                    return {
+                      success: 1,
+                      file: { url: downloadUrl },
+                    };
                   },
                 },
               },
-              image: {
-                class: Image,
-                config: {
-                  buttonContent: 'Selecciona una imagen',
-                  captionPlaceholder: 'Ingresa el título de la imagen',
-                  uploader: {
-                    uploadByFile: async (file : File) => {
-                      const downloadUrl = await uploadImageAsync(file, `blog/postsImages/${user.uid}/images`);
-                      return {
-                        success: 1,
-                        file: { url: downloadUrl },
-                      };
-                    },
-                  },
-                },
-              },
             },
-            placeholder: 'Empieza a editar tu post!',
-            data: {
-              time: postData.post.time.getTime(),
-              blocks: postData.post.blocks,
-            },
-            onReady: () => {
-              setIsLoading(false);
-            },
-          });
-
-          setEditor(newEditor);
-        }
+          },
+          placeholder: 'Empieza a editar tu post!',
+          data: {
+            time: postData.post.time.getTime(),
+            blocks: postData.post.blocks,
+          },
+          onReady: () => {
+            setIsLoading(false);
+          },
+        });
+        destroyEditor = newEditor.destroy;
+        setEditor(newEditor);
       }
     };
     if (initEditor) initEditor();
+    return destroyEditor;
   }, [postData, isLoading, editor, holderId, user]);
 
   return (

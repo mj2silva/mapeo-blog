@@ -199,6 +199,15 @@ const updateBlogPost = async (postId: string, postData: Partial<PostData>) : Pro
   await batch.commit();
 };
 
+const deletePost = async (postId : string) : Promise<string> => {
+  const promise = new Promise<string>((resolve) => {
+    setTimeout(() => {
+      resolve(postId);
+    }, 3000);
+  });
+  return promise;
+};
+
 export {
   createNewMeeting,
   checkCompanyValid,
@@ -212,4 +221,5 @@ export {
   getBlogPostBySlug,
   updateBlogPost,
   uploadImageAsync,
+  deletePost,
 };

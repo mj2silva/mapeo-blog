@@ -26,7 +26,9 @@ const mapFirebasePostsToPostsData = (firebasePost) : PostData[] => firebasePost.
 const UserPosts : FC = () => {
   const { user } = useContext(UserContext);
   const postsRef = firestore.collection('blogPosts').where('autorId', '==', user.uid).orderBy('fechaDeCreacion', 'desc');
-  const [posts, loading, error] = useCollectionDataOnce<PostData>(postsRef);
+  const [posts, loading, error] = useCollectionDataOnce<PostData>(postsRef, {
+    idField: 'id',
+  });
   return (
     <div className={`user-posts ${loading && 'loading-container'}`}>
       <Metatags title={`Mis posts | ${user.username}`} />
