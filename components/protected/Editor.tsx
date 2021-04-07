@@ -1,18 +1,18 @@
-import { useRouter } from 'next/router';
 import {
   ChangeEventHandler, FC, FormEventHandler, useContext, useEffect, useState,
 } from 'react';
-import {
-  createBlogPost, getBlogPostBySlug, updateBlogPost, uploadImageAsync,
-} from '../../lib/firebase';
-import { PostData } from '../../lib/types';
-import UserContext from '../../lib/userContext';
+import { useRouter } from 'next/router';
+
+import { PostData, User } from '../../lib/types';
 import Spinner, { SpinnerColors } from '../common/Spinner';
 import Metatags from './Metatags';
 
-enum LogLevels {
-  ERROR = 'ERROR'
-}
+import { createSlug } from '../../lib/utils';
+import UserContext from '../../lib/userContext';
+import useEditor from '../../lib/useEditor';
+import {
+  createBlogPost, getBlogPostBySlug, updateBlogPost,
+} from '../../lib/firebase';
 
 type Props = {
   postSlug?: string,
@@ -22,75 +22,86 @@ const defaultProps : Partial<Props> = {
   postSlug: null,
 };
 
+const getInitialPostData = (user: User) : PostData => ({
+  authorUId: user.uid,
+  post: {
+    time: new Date(),
+    blocks: null,
+    editorInfo: { version: null },
+  },
+  slug: '',
+  createdDate: null,
+  isPublic: false,
+  title: '',
+});
+
 const Editor : FC<Props> = (props : Props) => {
   const { postSlug } = props;
   const { user } = useContext(UserContext);
-  const [editor, setEditor] = useState(null);
-  const [error, setError] = useState(null);
-  const router = useRouter();
-  const [holderId] = useState(new Date().getTime().toString());
-  const [postData, setPostData] = useState<PostData>({
-    authorUId: user.uid,
-    post: {
-      time: new Date(),
-      blocks: null,
-      editorInfo: {
-        version: null,
-      },
-    },
-    slug: '',
-    createdDate: null,
-    isPublic: false,
-    title: '',
-  });
-  const [isLoading, setIsLoading] = useState(true);
 
+  const [postData, setPostData] = useState<PostData>(getInitialPostData(user));
+  const [isLoading, setIsLoading] = useState(true);
+  const [formError, setError] = useState(null);
+
+  const router = useRouter();
+
+  const {
+    editor, initEditor, save, error, holderId,
+  } = useEditor(user, postData.post);
+  // Efecto que inicializa el editor
   useEffect(() => {
-    const getInitialPost = async () : Promise<void> => {
+    if (!isLoading && editor === null) {
+      const destroyEditor = (editor) ? editor.destroy : initEditor(postData.post);
+      return destroyEditor;
+    }
+    return null;
+  }, [editor, initEditor, isLoading, postData]);
+  // Efecto que trae los datos dependiendo de si hay o no blogPost
+  useEffect(() => {
+    const retrieveDataToEdit = async () : Promise<void> => {
       if (postSlug) {
         setIsLoading(true);
         try {
-          const actualPostData = await getBlogPostBySlug(postSlug);
-          setPostData(actualPostData);
-          setIsLoading(false);
+          const oldPostData = await getBlogPostBySlug(postSlug);
+          setPostData(oldPostData);
         } catch (err) {
+          setError(err);
           router.push('/internal/nuevo-post');
         }
-      } else {
-        setIsLoading(false);
       }
+      setIsLoading(false);
     };
-    getInitialPost();
+    retrieveDataToEdit();
   }, [postSlug, router]);
 
   const onSave : FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
     setIsLoading(true);
     try {
-      const newData = await editor.save();
-      const dataToSave = {
-        ...postData,
-        post: {
-          time: new Date(newData.time),
-          blocks: newData.blocks,
-          editorInfo: {
-            version: newData.version,
-          },
-        },
-      };
+      const newPostData = await save();
+      const dataToSave = { ...postData, post: newPostData };
       setPostData(dataToSave);
-      if (postData.id) {
-        await updateBlogPost(dataToSave.id, dataToSave);
-      } else {
+      if (postData.id) await updateBlogPost(dataToSave.id, dataToSave);
+      else {
         await createBlogPost(dataToSave);
         router.push(`/internal/posts/${dataToSave.slug}`);
       }
-      await editor.render(newData);
       setError(null);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
+  };
+
+  const handleTitleChange : ChangeEventHandler<HTMLInputElement> = async (event) => {
+    const title = event.target.value;
+    const slug = createSlug(title);
+    setPostData({
+      ...postData,
+      title,
+      slug,
+    });
   };
 
   const handleChange : ChangeEventHandler<HTMLInputElement> = async (event) => {
@@ -107,88 +118,16 @@ const Editor : FC<Props> = (props : Props) => {
     });
   };
 
-  useEffect(() => {
-    let destroyEditor = null;
-    const initEditor = async () : Promise<void> => {
-      if (editor === null && !isLoading) {
-        setIsLoading(true);
-        const EditorJS = (await (import('@editorjs/editorjs'))).default;
-        const Header = (await import('@editorjs/header')).default;
-        const Quotes = (await import('@editorjs/quote')).default;
-        const List = (await import('@editorjs/list')).default;
-        const Embed = (await import('@editorjs/embed')).default;
-        const Image = (await import('../../lib/ImageEditor/bundle')).default;
-
-        const newEditor = new EditorJS({
-          autofocus: true,
-          holder: holderId,
-          logLevel: LogLevels.ERROR,
-          tools: {
-            header: {
-              class: Header,
-              inlineToolbar: true,
-            },
-            quote: {
-              class: Quotes,
-              config: {
-                quotePlaceholder: 'Ingresa una cita de autor',
-                captionPlaceholder: 'Ingresa la fuente y/o autor',
-              },
-            },
-            list: List,
-            embed: {
-              class: Embed,
-              inlineToolbar: true,
-              config: {
-                services: {
-                  youtube: true,
-                },
-              },
-            },
-            image: {
-              class: Image,
-              config: {
-                buttonContent: 'Selecciona una imagen',
-                captionPlaceholder: 'Ingresa el título de la imagen',
-                uploader: {
-                  uploadByFile: async (file : File) => {
-                    const downloadUrl = await uploadImageAsync(file, `blog/postsImages/${user.uid}/images`);
-                    return {
-                      success: 1,
-                      file: { url: downloadUrl },
-                    };
-                  },
-                },
-              },
-            },
-          },
-          placeholder: 'Empieza a editar tu post!',
-          data: {
-            time: postData.post.time.getTime(),
-            blocks: postData.post.blocks,
-          },
-          onReady: () => {
-            setIsLoading(false);
-          },
-        });
-        destroyEditor = newEditor.destroy;
-        setEditor(newEditor);
-      }
-    };
-    if (initEditor) initEditor();
-    return destroyEditor;
-  }, [postData, isLoading, editor, holderId, user]);
-
   return (
     <>
       <div className="editor">
         { postSlug
           ? <Metatags title={`Editar post | ${postData.title}`} />
-          : <Metatags title={`Nuevo post | ${user.username}`} />}
+          : <Metatags title={`Nuevo post | ${user.username}`} /> }
         <form onSubmit={onSave} className="editor__form">
           <label className="editor__form-input" htmlFor="title">
             <span>Título del post:</span>
-            <input value={postData.title || ''} onChange={handleChange} type="text" name="title" required />
+            <input value={postData.title || ''} onChange={handleTitleChange} type="text" name="title" required />
           </label>
           <label className="editor__form-input" htmlFor="slug">
             <span>Url personalizada (blog.mapeo.pe/post/[tu-url]):</span>
@@ -199,11 +138,11 @@ const Editor : FC<Props> = (props : Props) => {
             <input onChange={handleCheckedChange} type="checkbox" name="isPublic" />
           </label>
           <div id={holderId} className="editorjs" />
-          { error && (
+          { (formError || error) && (
           <div className="editor__error">
             Hubo un error al guardar el post:
             {' '}
-            {error}
+            {formError || error}
           </div>
           ) }
           { (isLoading)
