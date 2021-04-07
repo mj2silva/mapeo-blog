@@ -10,8 +10,8 @@ const firebaseConfig = {
   projectId: 'mapeo-web-a4a14',
   storageBucket: 'mapeo-web-a4a14.appspot.com',
   messagingSenderId: '1054491243736',
-  appId: '1:1054491243736:web:6ed9f5a3d0bd7de78993ad',
-  measurementId: 'G-K142CRY7JD',
+  appId: '1:1054491243736:web:cf29aee650947f8b8993ad',
+  measurementId: 'G-4Q3DB92NL8',
 };
 
 if (!firebase.apps.length) {
