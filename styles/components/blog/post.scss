@@ -16,6 +16,9 @@
     margin: 0 auto;
     color: $grayText;
     font-family: $gilroy;
+    &--preview {
+      width: 80%;
+    }
   }
   &__title {
     h1 {

@@ -162,7 +162,7 @@ const getBlogPostBySlug = async (slug: string) : Promise<PostData> => {
     const postData : PostData = {
       id: post.id,
       authorUId: data.autorId,
-      createdDate: data.fechaDeCreacion,
+      createdDate: new Date(data.fechaDeCreacion),
       post: {
         blocks: Object.keys(data.post).map((key) => data.post[key]),
         time: new Date(data.fechaDeActualizacion),

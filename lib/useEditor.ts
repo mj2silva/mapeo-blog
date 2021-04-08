@@ -15,10 +15,13 @@ type UseEditorHook = {
 }
 
 enum LogLevels {
-  ERROR = 'ERROR'
+  VERBOSE = 'VERBOSE',
+  INFO = 'INFO',
+  WARN = 'WARN',
+  ERROR = 'ERROR',
 }
 
-const useEditor = (user : User, post?: Post) : UseEditorHook => {
+const useEditor = (user : User, onChange?: (event) => void, post?: Post) : UseEditorHook => {
   const [loading, setIsLoading] = useState(true);
   const [editor, setEditor] = useState(null);
   const [error, setError] = useState(null);
@@ -44,7 +47,8 @@ const useEditor = (user : User, post?: Post) : UseEditorHook => {
       const newEditor = new EditorJS({
         autofocus: true,
         holder: holderId,
-        logLevel: LogLevels.ERROR,
+        logLevel: LogLevels.WARN,
+        onChange,
         tools: {
           header: {
             class: Header,

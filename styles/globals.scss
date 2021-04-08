@@ -4,6 +4,7 @@
 // Common components
 @import "./components/common/button.scss";
 @import "./components/common/link.scss";
+@import "./components/common/toggle.scss";
 @import "./components/section.scss";
 @import "./components/loading-screen.scss";
 
@@ -124,4 +125,9 @@ input[type="search"]::-webkit-search-results-decoration {
   align-content: center;
   justify-content: center;
   min-height: 2rem;
+}
+
+.hidden {
+  display: none;
+  position: absolute;
 }
