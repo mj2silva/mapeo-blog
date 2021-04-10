@@ -1,6 +1,5 @@
 import {
-  Dispatch,
-  SetStateAction, useState,
+  Dispatch, SetStateAction, useState,
 } from 'react';
 
 interface PageHook {

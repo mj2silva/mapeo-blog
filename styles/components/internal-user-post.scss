@@ -1,6 +1,6 @@
 .user-posts {
   width: 80%;
-  margin: 0 auto;
+  margin: 0 auto 1rem auto;
   &__error {
     color: $red;
     text-align: center;
@@ -21,6 +21,21 @@
       &:hover {
         color: $yellowHover;
       }
+    }
+  }
+  &__loader {
+    align-self: center;
+    text-align: center;
+  }
+  &__button {
+    background-color: $skyblue;
+    min-width: 10rem;
+    padding: .5rem;
+    font-family: inherit;
+    color: $white;
+    cursor: pointer;
+    &:hover {
+      background-color: $skyblueHover;
     }
   }
 }

@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   ChangeEventHandler, FC, FormEventHandler, useState,
 } from 'react';
-import { checkCompanyValid, createNewMeeting } from '../lib/firebase';
+import { checkCompanyValid, createNewMeeting } from '../lib/repository/meetings';
 import { MeetingInfo } from '../lib/types';
 import Spinner from './common/Spinner';
 

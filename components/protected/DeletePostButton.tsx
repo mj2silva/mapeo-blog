@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FC } from 'react';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { deletePost } from '../../lib/firebase';
+import { deletePost } from '../../lib/repository/blogPosts';
 import { SpinnerColors } from '../common/Spinner';
 
 const mapeoSwal = Swal.mixin({

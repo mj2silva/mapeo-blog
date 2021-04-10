@@ -1,7 +1,5 @@
 import { useCallback, useState } from 'react';
-import {
-  uploadImageAsync,
-} from './firebase';
+import { uploadImageAsync } from './repository/files';
 import { Post, User } from './types';
 
 type UseEditorHook = {

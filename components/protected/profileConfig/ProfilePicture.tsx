@@ -1,9 +1,10 @@
 import {
   ChangeEventHandler, FC, FormEventHandler, useContext, useState,
 } from 'react';
-import {
-  STATE_CHANGED, updateUserProfilePicture, uploadImage,
-} from '../../../lib/firebase';
+
+import { STATE_CHANGED } from '../../../lib/firebase';
+import { updateUserProfilePicture } from '../../../lib/repository/users';
+import { uploadImage } from '../../../lib/repository/files';
 import UserContext from '../../../lib/userContext';
 
 const ProfilePicture : FC = () => {

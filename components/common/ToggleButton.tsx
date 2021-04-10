@@ -11,7 +11,7 @@ const inactiveClassName = '';
 const ToggleButton : FC<Props> = (props : Props) => {
   const { name, onCheckedChange } = props;
   const [active, setIsActive] = useState(false);
-  const handleChange = (event) => {
+  const handleChange : ChangeEventHandler<HTMLInputElement> = (event) => {
     setIsActive((act) => !act);
     onCheckedChange(event);
   };

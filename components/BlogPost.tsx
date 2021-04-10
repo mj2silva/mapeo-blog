@@ -30,11 +30,11 @@ const BlogPost : FC<Props> = (props: Props) => {
           <strong>{ postData.authorUId }</strong>
         </div>
         <div className="blogpost__date">
-          { postData.createdDate.toLocaleDateString('es-ES') || new Date().toLocaleDateString() }
+          { postData.createdDate?.toLocaleDateString('es-ES') || new Date().toLocaleDateString() }
           {' '}
           a las
           {' '}
-          { postData.createdDate.toLocaleTimeString('es-ES') || new Date().toLocaleTimeString() }
+          { postData.createdDate?.toLocaleTimeString('es-ES') || new Date().toLocaleTimeString() }
         </div>
       </div>
       <div className="blogpost__content">

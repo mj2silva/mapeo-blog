@@ -1,14 +1,15 @@
-import { useRouter } from 'next/router';
 import {
   ChangeEventHandler, FC, FormEventHandler, useContext, useEffect, useState,
 } from 'react';
-import {
-  createBlogPost, deleteImageAsync, getBlogPostBySlug, updateBlogPost,
-} from '../../lib/firebase';
+import { useRouter } from 'next/router';
+
+import { deleteImageAsync } from '../../lib/repository/files';
+import { createBlogPost, getBlogPostBySlug, updateBlogPost } from '../../lib/repository/blogPosts';
 import { PostData, User } from '../../lib/types';
 import useEditor from '../../lib/useEditor';
 import UserContext from '../../lib/userContext';
 import { createSlug } from '../../lib/utils';
+
 import Spinner, { SpinnerColors } from '../common/Spinner';
 import Editor from './Editor';
 import Metatags from './Metatags';
@@ -71,6 +72,12 @@ const BlogPostForm : FC<Props> = (props: Props) => {
       ...postData,
       [event.target.name]: event.target.checked,
     });
+  };
+
+  const savePreview = async () : Promise<void> => {
+    const newPostData = await save();
+    const dataToSave = { ...postData, post: newPostData };
+    setPostData(dataToSave);
   };
 
   const onSave : FormEventHandler<HTMLFormElement> = async (event) => {
@@ -157,6 +164,7 @@ const BlogPostForm : FC<Props> = (props: Props) => {
               initEditor={initEditor}
               post={postData}
               holderId={holderId}
+              savePreview={savePreview}
             />
           )}
         { (formError || error) && (

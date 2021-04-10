@@ -2,7 +2,7 @@ import {
   ChangeEventHandler, FC, useContext, useEffect, useState,
 } from 'react';
 import debounce from 'lodash.debounce';
-import { checkUsernameExists } from '../../../lib/firebase';
+import { checkUsernameExists } from '../../../lib/repository/users';
 import UserContext from '../../../lib/userContext';
 
 const Username : FC = () => {

@@ -11,6 +11,7 @@ type Props = {
   editor: any,
   initEditor: (post?: Post) => void,
   holderId: string,
+  savePreview: () => Promise<void>
   // save: () => Promise<Post>
 }
 
@@ -21,7 +22,7 @@ const blogPostClassName = 'editorjs';
 const Editor : FC<Props> = (props : Props) => {
   const { post } = props;
   const {
-    editor, initEditor, holderId,
+    editor, initEditor, holderId, savePreview,
   } = props;
   const [isPreview, setIsPreview] = useState(false);
   // Efecto que inicializa el editor
@@ -30,7 +31,8 @@ const Editor : FC<Props> = (props : Props) => {
     return null;
   }, [editor, initEditor, post]);
 
-  const handlePreviewChange = () : void => {
+  const handlePreviewChange = async () : Promise<void> => {
+    if (savePreview) await savePreview();
     setIsPreview(!isPreview);
   };
 
