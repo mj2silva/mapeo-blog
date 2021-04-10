@@ -2,7 +2,9 @@ import { useRouter } from 'next/router';
 import {
   ChangeEventHandler, FC, FormEventHandler, useContext, useEffect, useState,
 } from 'react';
-import { createBlogPost, getBlogPostBySlug, updateBlogPost } from '../../lib/firebase';
+import {
+  createBlogPost, deleteImageAsync, getBlogPostBySlug, updateBlogPost,
+} from '../../lib/firebase';
 import { PostData, User } from '../../lib/types';
 import useEditor from '../../lib/useEditor';
 import UserContext from '../../lib/userContext';
@@ -41,9 +43,11 @@ const BlogPostForm : FC<Props> = (props: Props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [formError, setError] = useState(null);
 
+  const [initialImages, setInitialImages] = useState(null);
+
   const {
-    editor, initEditor, holderId, error, save,
-  } = useEditor(user, (event) => { console.log({ event }); }, postData.post);
+    editor, initEditor, holderId, error, save, uploadedImages,
+  } = useEditor(user, null, postData.post);
 
   const handleTitleChange : ChangeEventHandler<HTMLInputElement> = async (event) => {
     const title = event.target.value;
@@ -76,6 +80,23 @@ const BlogPostForm : FC<Props> = (props: Props) => {
       const newPostData = await save();
       const dataToSave = { ...postData, post: newPostData };
       setPostData(dataToSave);
+      // Se obtienen la lista de imágenes que van en el blog
+      const finalImages = dataToSave.post.blocks
+        .filter((block) => block.type === 'image')
+        .map((imageBlock) => imageBlock.data?.file);
+      const finalImageNames = finalImages.map((imageData) => imageData?.name);
+      // Las imagenes que habían al principio
+      const initalImageNames = initialImages.map((imageData) => imageData?.name);
+      // Las que se han subido
+      const uploadedImageNames = uploadedImages.map((imageData) => imageData?.name);
+      // La suma de todas, las subidas y las que estaban
+      const allImages = Array.from(new Set([...initalImageNames, ...uploadedImageNames]));
+      // Se busca las imágenes que sobran para borrarlas
+      const imagesToDelete = allImages.filter(
+        (imageData) => !finalImageNames.includes(imageData),
+      );
+      // Se borran las imágenes descartadas
+      await Promise.all(imagesToDelete.map((imageUrl) => deleteImageAsync(`blog/postsImages/${user.uid}/images/${imageUrl}`)));
       if (postData.id) await updateBlogPost(dataToSave.id, dataToSave);
       else {
         await createBlogPost(dataToSave);
@@ -96,6 +117,10 @@ const BlogPostForm : FC<Props> = (props: Props) => {
         try {
           const oldPostData = await getBlogPostBySlug(postSlug);
           setPostData(oldPostData);
+          const usedImages = oldPostData.post.blocks
+            .filter((block) => block.type === 'image')
+            .map((imageBlock) => imageBlock.data?.file);
+          setInitialImages(usedImages);
         } catch (err) {
           setError(err);
           router.push('/internal/nuevo-post');
@@ -124,7 +149,7 @@ const BlogPostForm : FC<Props> = (props: Props) => {
           <span>Publicar</span>
           <input onChange={handleCheckedChange} type="checkbox" name="isPublic" />
         </label>
-        { (isLoading)
+        { (!postData.post?.blocks && isLoading)
           ? <Spinner color={SpinnerColors.yellow} width={20} height={20} />
           : (
             <Editor

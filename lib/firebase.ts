@@ -143,7 +143,12 @@ const uploadImageAsync = async (
   const ref = storage.ref(`${filePath}/${fileName || Date.now()}.${extension}`);
   await ref.put(file);
   const downloadUrl = await ref.getDownloadURL();
-  return downloadUrl;
+  return downloadUrl.toString();
+};
+
+const deleteImageAsync = async (refPath: string) : Promise<void> => {
+  const imageRef = storage.ref(refPath);
+  await imageRef.delete();
 };
 
 const updateUserProfilePicture = async (imageUrl: string, userId: string) : Promise<void> => {
@@ -162,7 +167,7 @@ const getBlogPostBySlug = async (slug: string) : Promise<PostData> => {
     const postData : PostData = {
       id: post.id,
       authorUId: data.autorId,
-      createdDate: new Date(data.fechaDeCreacion),
+      createdDate: new Date(data.fechaDeCreacion.seconds * 1000),
       post: {
         blocks: Object.keys(data.post).map((key) => data.post[key]),
         time: new Date(data.fechaDeActualizacion),
@@ -222,4 +227,5 @@ export {
   updateBlogPost,
   uploadImageAsync,
   deletePost,
+  deleteImageAsync,
 };

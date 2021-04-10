@@ -11,8 +11,12 @@ export type MeetingInfo = {
 }
 
 export type PostBlock = {
-  type: 'header' | 'quote' | 'paragraph' | 'table',
+  type: 'header' | 'quote' | 'paragraph' | 'image',
   data: {
+    file?: { url?: string, name?: string },
+    withBorder?: boolean,
+    withBackground?: boolean,
+    stretched?: boolean,
     text?: string,
     caption?: string,
     alignment?: string,

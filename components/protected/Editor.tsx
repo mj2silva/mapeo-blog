@@ -11,19 +11,17 @@ type Props = {
   editor: any,
   initEditor: (post?: Post) => void,
   holderId: string,
-  save: () => Promise<Post>
+  // save: () => Promise<Post>
 }
 
 const hiddenClassName = 'hidden';
 const editorClassName = 'editorjs';
 const blogPostClassName = 'editorjs';
-const toggleActiveClassName = 'editor__toggle--active';
-const toggleInactiveClassName = 'editor__toggle--inactive';
 
 const Editor : FC<Props> = (props : Props) => {
   const { post } = props;
   const {
-    editor, initEditor, holderId, save,
+    editor, initEditor, holderId,
   } = props;
   const [isPreview, setIsPreview] = useState(false);
   // Efecto que inicializa el editor

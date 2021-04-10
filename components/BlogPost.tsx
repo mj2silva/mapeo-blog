@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { FC } from 'react';
 import { PostData } from '../lib/types';
 
@@ -28,28 +29,43 @@ const BlogPost : FC<Props> = (props: Props) => {
           {' '}
           <strong>{ postData.authorUId }</strong>
         </div>
-        <div className="blogpost__date">{ postData.createdDate?.toUTCString() || new Date().toUTCString() }</div>
-      </div>
-      <div className="blogpost__table-of-contents">
-        <div className="blogpost__table-of-contents-title">
-          <h3>Índice de contenido</h3>
-        </div>
-        <div className="blogpost__table-of-contents-list">
-          <ul>
-            <li><a href="#">1. ¿Cuál es la mejor estrategia para captar clientes tan grandes y exclusivos?</a></li>
-            <li><a href="#">2. Los “test” en inbound marketing, una táctica efectiva para generar leads y posicionamiento de marca</a></li>
-            <li><a href="#">3. ¿Cuándo invertir en publicidad en prensa especializada y cuándo no?</a></li>
-          </ul>
+        <div className="blogpost__date">
+          { postData.createdDate.toLocaleDateString('es-ES') || new Date().toLocaleDateString() }
+          {' '}
+          a las
+          {' '}
+          { postData.createdDate.toLocaleTimeString('es-ES') || new Date().toLocaleTimeString() }
         </div>
       </div>
       <div className="blogpost__content">
-        { (postData.post.blocks?.map((block, index) => (
-          <p
-            key={block.data.text.slice(0, 3) + index.toString()}
-          >
-            {block.data.text}
-          </p>
-        ))) }
+        { (postData.post?.blocks?.map((block, index) => {
+          if (block.type === 'paragraph') {
+            return (
+              <p
+                key={block.data.text.slice(0, 3) + index.toString()}
+              >
+                {block.data.text}
+              </p>
+            );
+          }
+          if (block.type === 'header') {
+            return (
+              <h3
+                key={block.data.text.slice(0, 3) + index.toString()}
+              >
+                {block.data.text}
+              </h3>
+            );
+          }
+          if (block.type === 'image') {
+            return (
+              <div className="blogpost__image-container" style={{ width: '40rem', height: '20rem', position: 'relative' }}>
+                <Image src={block.data.file.url} layout="fill" objectFit="contain" />
+              </div>
+            );
+          }
+          return null;
+        })) }
       </div>
     </section>
   );

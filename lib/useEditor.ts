@@ -12,6 +12,7 @@ type UseEditorHook = {
   holderId: string,
   newPost: Post,
   error: any,
+  uploadedImages: any,
 }
 
 enum LogLevels {
@@ -26,6 +27,9 @@ const useEditor = (user : User, onChange?: (event) => void, post?: Post) : UseEd
   const [editor, setEditor] = useState(null);
   const [error, setError] = useState(null);
   const [holderId] = useState(new Date().getTime().toString());
+
+  const [uploadedImages, setUploadedImages] = useState([]);
+
   const [newPost, setNewPost] = useState<Post>(post || {
     time: new Date(),
     blocks: null,
@@ -48,7 +52,7 @@ const useEditor = (user : User, onChange?: (event) => void, post?: Post) : UseEd
         autofocus: true,
         holder: holderId,
         logLevel: LogLevels.WARN,
-        onChange,
+        // onChange,
         tools: {
           header: {
             class: Header,
@@ -78,10 +82,15 @@ const useEditor = (user : User, onChange?: (event) => void, post?: Post) : UseEd
               captionPlaceholder: 'Ingresa el título de la imagen',
               uploader: {
                 uploadByFile: async (file : File) => {
-                  const downloadUrl = await uploadImageAsync(file, `blog/postsImages/${user.uid}/images`);
+                  const filename = Date.now().toString();
+                  const extension = file.type.split('/')[1];
+                  const fullFileName = `${filename}.${extension}`;
+                  const downloadUrl = await uploadImageAsync(file, `blog/postsImages/${user.uid}/images`, filename);
+                  const fileData = { url: downloadUrl, name: fullFileName };
+                  setUploadedImages((ui) => [...ui, fileData]);
                   return {
                     success: 1,
-                    file: { url: downloadUrl },
+                    file: fileData,
                   };
                 },
               },
@@ -108,17 +117,19 @@ const useEditor = (user : User, onChange?: (event) => void, post?: Post) : UseEd
     try {
       setIsLoading(true);
       const newData = await editor.save();
-      const dataToSave : Post = {
+      const postToSave : Post = {
         ...post,
         time: new Date(newData.time),
         blocks: newData.blocks,
         editorInfo: { version: newData.version },
       };
-      setNewPost(dataToSave);
+      // await deleteUnnecesaryImages(postToSave);
+      setNewPost(postToSave);
       setError(null);
       setIsLoading(false);
-      return dataToSave;
+      return postToSave;
     } catch (err) {
+      console.log(err);
       setError(err.message);
       setIsLoading(false);
       return null;
@@ -133,6 +144,7 @@ const useEditor = (user : User, onChange?: (event) => void, post?: Post) : UseEd
     holderId,
     error,
     initEditor,
+    uploadedImages,
   };
 };
 
