@@ -1,8 +1,8 @@
 import {
-  ChangeEventHandler, FC, useContext, useEffect, useState,
+  ChangeEventHandler, FC, FormEventHandler, useContext, useEffect, useState,
 } from 'react';
 import debounce from 'lodash.debounce';
-import { checkUsernameExists } from '../../../lib/repository/users';
+import { checkUsernameExists, updateUserName } from '../../../lib/repository/users';
 import UserContext from '../../../lib/userContext';
 
 const Username : FC = () => {
@@ -23,8 +23,11 @@ const Username : FC = () => {
     checkUsernameValid();
   }, [formValue]);
 
-  const handleSubmit = async () : Promise<void> => {
-
+  const handleSubmit : FormEventHandler<HTMLFormElement> = async (event) : Promise<void> => {
+    event.preventDefault();
+    setIsLoading(true);
+    await updateUserName(user, formValue);
+    setIsLoading(false);
   };
 
   const handleChange : ChangeEventHandler<HTMLInputElement> = async (e) : Promise<void> => {
@@ -53,6 +56,8 @@ const Username : FC = () => {
         <button className="configuration__form-button" type="submit" disabled={!isLoading && !isValid}>
           Guardar
         </button>
+        { (!isValid && formValue !== user.username)
+        && <span>Nombre de usuario inválido o ya existe</span>}
       </form>
     </section>
   );

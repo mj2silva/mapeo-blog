@@ -152,20 +152,6 @@ const deletePost = async (postId : string) : Promise<string> => {
 const updateBlogPost = async (postId: string, postData: PostData) : Promise<void> => {
   const ref = firestore.collection('blogPosts');
   const blogPost = mapAppPostToServerPost(postData);
-  /* const blogPost = {
-    fechaDeActualizacion: postData.post.time || new Date(),
-    post: {
-      ...postData.post.blocks,
-    },
-    slug: postData.slug,
-    metadata: {
-      editorInfo: {
-        version: postData.post.editorInfo?.version,
-      },
-    },
-    publicado: postData.isPublic || false,
-    titulo: postData.title,
-  }; */
   const blogPostDoc = ref.doc(postId);
   const batch = firestore.batch();
   batch.update(blogPostDoc, blogPost);

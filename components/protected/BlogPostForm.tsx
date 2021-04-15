@@ -170,7 +170,7 @@ const BlogPostForm : FC<Props> = (props: Props) => {
         </label>
         <label className="editor__form-input editor__form-input--checkbox" htmlFor="isPublic">
           <span>Publicar</span>
-          <input onChange={handleCheckedChange} type="checkbox" name="isPublic" />
+          <input checked={postData.isPublic} onChange={handleCheckedChange} type="checkbox" name="isPublic" />
         </label>
         { (!postData.post?.blocks && isLoading)
           ? <Spinner color={SpinnerColors.yellow} width={20} height={20} />
