@@ -1,20 +1,55 @@
+import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
-import { FC, useEffect, useState } from 'react';
-import PostRecomendations from '../../components/PostsRecomendations';
-import { blogPosts, recomendedBlogPosts } from '../../mock/blogPosts';
-import BlogPost from '../../types/BlogPost';
+import { FC, useState } from 'react';
+import BlogPost from '../../components/BlogPost';
+import { getPublicBlogPostBySlug, getPublicBlogPosts } from '../../lib/repository/blogPosts';
+import { SerializedBlogPost } from '../../lib/types';
+import { deserializeBlogPost, serializeBlogPost } from '../../lib/utils';
 
-const BlogPostPage : FC = () => {
-  const [blogPost, setBlogPost] = useState<BlogPost>(null);
-  const router = useRouter();
-  const { slug } = router.query;
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const { slug } = params;
+  try {
+    const blogPost = typeof slug === 'string' ? await getPublicBlogPostBySlug(slug) : await getPublicBlogPostBySlug(slug[0]);
+    const path = blogPost.slug;
+    return {
+      props: {
+        postData: serializeBlogPost(blogPost),
+        path,
+      },
+      revalidate: 5000,
+    };
+  } catch (err) {
+    return {
+      props: {
+        postData: null,
+      },
+      revalidate: 5000,
+    };
+  }
+};
 
-  useEffect(() => {
-    const loadedBlogPost = blogPosts.filter((blog) => blog.slug === slug)[0];
-    setBlogPost(loadedBlogPost);
-  }, [slug]);
+export const getStaticPaths: GetStaticPaths = async () => {
+  try {
+    const posts = await getPublicBlogPosts();
+    const paths = posts.map((post) => ({
+      params: { slug: post.slug },
+    }));
+    return {
+      paths,
+      fallback: 'blocking',
+    };
+  } catch (err) {
+    return null;
+  }
+};
 
+type Props = {
+  postData: SerializedBlogPost;
+}
+
+const BlogPostPage : FC<Props> = (props: Props) => {
+  const { postData } = props;
+  const [blogPost] = useState(deserializeBlogPost(postData));
   return (
     (!blogPost) ? <div>Loading...</div> : (
       <main className="main">
@@ -45,66 +80,24 @@ const BlogPostPage : FC = () => {
             </div>
           </div>
         </section>
-        <section className="blogpost__post">
-          <div className="blogpost__tag">
-            <h3>Marketing Leaders</h3>
-          </div>
-          <div className="blogpost__title">
-            <h1>
-              { blogPost.title }
-            </h1>
-          </div>
-          <div className="blogpost__author">
-            <div className="blogpost__author-image">
-              <img src={blogPost.author.photoUrl} alt="Foto autor" />
-            </div>
-            <div className="blogpost__author-name">
-              Por
-              {' '}
-              <strong>{ blogPost.author.name }</strong>
-            </div>
-            <div className="blogpost__date">{ blogPost.publicationDate.toUTCString() }</div>
-          </div>
-          <div className="blogpost__abstract">
+        <BlogPost postData={blogPost} isPreview={false} />
+        {/* <div className="blogpost__abstract">
             <summary>
               <p>
                 { blogPost.abstract }
               </p>
             </summary>
-          </div>
-          <div className="blogpost__table-of-contents">
-            <div className="blogpost__table-of-contents-title">
-              <h3>Índice de contenido</h3>
-            </div>
-            <div className="blogpost__table-of-contents-list">
-              <ul>
-                <li><a href="#">1. ¿Cuál es la mejor estrategia para captar clientes tan grandes y exclusivos?</a></li>
-                <li><a href="#">2. Los “test” en inbound marketing, una táctica efectiva para generar leads y posicionamiento de marca</a></li>
-                <li><a href="#">3. ¿Cuándo invertir en publicidad en prensa especializada y cuándo no?</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="blogpost__content">
-            { (blogPost.entrie.parragraphs.map((parragraph, index) => (
+          </div> */}
+        {/* <div className="blogpost__content">
+            { (blogPost.post.blocks.map((parragraph, index) => (
               <p
-                key={parragraph.slice(0, 3) + index.toString()}
+                key={parragraph.data.(0, 3) + index.toString()}
               >
                 {parragraph}
               </p>
             ))) }
-          </div>
-          <div className="blogpost__comment-form">
-            <form>
-              <h2>¿Y tú qué opinas? ¡Déjanos aquí tus comentarios!</h2>
-              <input className="blogpost__comment-form-input" type="text" placeholder="Nombre" />
-              <input className="blogpost__comment-form-input" type="text" placeholder="Apellido" />
-              <input className="blogpost__comment-form-input" type="email" placeholder="Email" />
-              <textarea className="blogpost__comment-form-input" placeholder="Mensaje" />
-              <button className="button" type="submit">Enviar</button>
-            </form>
-          </div>
-        </section>
-        <PostRecomendations recomendedBlogPosts={recomendedBlogPosts} />
+          </div> */}
+        {/* <PostRecomendations recomendedBlogPosts={recomendedBlogPosts} /> */}
       </main>
     )
   );

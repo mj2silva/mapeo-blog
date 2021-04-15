@@ -97,6 +97,22 @@ const getBlogPostBySlug = async (slug: string) : Promise<PostData> => {
   return postsData[0];
 };
 
+const getPublicBlogPostBySlug = async (slug: string) : Promise<PostData> => {
+  const ref = firestore.collection('blogPosts');
+  const posts = await ref
+    .where('publicado', '==', true)
+    .where('slug', '==', slug)
+    .limit(1)
+    .get();
+  const postsData = [];
+  posts.forEach((post) => {
+    const data = post.data() as ServerPostData;
+    const postData = mapServerPostToAppPost(data, post.id);
+    postsData.push(postData);
+  });
+  return postsData[0];
+};
+
 // Create
 const createBlogPost = async (postData: PostData) : Promise<void> => {
   const ref = firestore.collection('blogPosts');
@@ -161,6 +177,7 @@ export {
   getBlogPost,
   getUserBlogPosts,
   getBlogPostBySlug,
+  getPublicBlogPostBySlug,
   getPublicBlogPosts,
   deletePost,
   updateBlogPost,

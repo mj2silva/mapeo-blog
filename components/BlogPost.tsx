@@ -24,6 +24,9 @@ const BlogPost : FC<Props> = (props: Props) => {
         </h1>
       </div>
       <div className="blogpost__author">
+        <div className="blogpost__author-image">
+          <img src={postData.author.photoUrl} alt="Foto autor" />
+        </div>
         <div className="blogpost__author-name">
           Por
           {' '}
@@ -66,6 +69,16 @@ const BlogPost : FC<Props> = (props: Props) => {
           }
           return null;
         })) }
+      </div>
+      <div className="blogpost__comment-form">
+        <form>
+          <h2>¿Y tú qué opinas? ¡Déjanos aquí tus comentarios!</h2>
+          <input className="blogpost__comment-form-input" type="text" placeholder="Nombre" />
+          <input className="blogpost__comment-form-input" type="text" placeholder="Apellido" />
+          <input className="blogpost__comment-form-input" type="email" placeholder="Email" />
+          <textarea className="blogpost__comment-form-input" placeholder="Mensaje" />
+          <button className="button" type="submit">Enviar</button>
+        </form>
       </div>
     </section>
   );

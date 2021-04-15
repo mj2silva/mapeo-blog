@@ -5,28 +5,12 @@ import BlogEntrieLink from '../components/BlogEntrieLink';
 import ScheduleMeeting from '../components/ScheduleMeeting';
 // import { blogPosts } from '../mock/blogPosts';
 import { getPublicBlogPosts } from '../lib/repository/blogPosts';
-import { PostData } from '../lib/types';
+import { PostData, SerializedBlogPost } from '../lib/types';
+import { deserializeBlogPost, serializeBlogPost } from '../lib/utils';
 
 const renderBlogLinks = (
   blogPostList: PostData[],
 ) : ReactNode[] => blogPostList.map((blog) => <BlogEntrieLink key={`blg-link-${blog.slug}`} post={blog} />);
-
-type SerializedBlogPost = Omit<PostData, 'createdDate' | 'updatedDate'> & {
-  createdDate: number,
-  updatedDate: number,
-}
-
-const serializeBlogPost = (blog: PostData) : SerializedBlogPost => ({
-  ...blog,
-  createdDate: blog.createdDate.getTime(),
-  updatedDate: blog.updatedDate.getTime(),
-});
-
-const deserializeBlogPost = (serializedBlog: SerializedBlogPost) : PostData => ({
-  ...serializedBlog,
-  createdDate: new Date(serializedBlog.createdDate),
-  updatedDate: new Date(serializedBlog.updatedDate),
-});
 
 export const getStaticProps : GetStaticProps = async () => {
   const blogPosts = await getPublicBlogPosts();

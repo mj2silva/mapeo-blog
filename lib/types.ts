@@ -120,6 +120,11 @@ export type ServerPostData = {
   titulo: string,
 }
 
+export type SerializedBlogPost = Omit<PostData, 'createdDate' | 'updatedDate'> & {
+  createdDate: number,
+  updatedDate: number,
+}
+
 export type UserCredential = firebase.auth.UserCredential;
 export type FirebaseUser = firebase.User;
 export type AuthError = firebase.auth.Error;
