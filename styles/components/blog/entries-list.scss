@@ -63,13 +63,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    & img {
-      position: absolute;
-      width: 5rem;
-      height: 5rem;
-      align-self: flex-end;
-      margin: -4rem 1rem;
-    }
+    position: relative;
   }
   &__tag {
     font-size: .7rem;
@@ -87,6 +81,15 @@
   &__author {
     color: $grayText;
     font-size: .8rem;
+  }
+  &__profile-picture {
+    position: absolute;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    align-self: flex-end;
+    margin: -4rem 1rem;
   }
   @media screen and (max-width: $breakpoint-laptop){
     &__image {

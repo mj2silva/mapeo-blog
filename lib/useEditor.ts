@@ -29,7 +29,7 @@ const useEditor = (user : User, onChange?: (event) => void, post?: Post) : UseEd
   const [uploadedImages, setUploadedImages] = useState([]);
 
   const [newPost, setNewPost] = useState<Post>(post || {
-    time: new Date(),
+    time: new Date().getTime(),
     blocks: null,
     editorInfo: {
       version: null,
@@ -97,7 +97,7 @@ const useEditor = (user : User, onChange?: (event) => void, post?: Post) : UseEd
         },
         placeholder: 'Empieza a editar tu post!',
         data: {
-          time: oldPost?.time.getTime(),
+          time: oldPost?.time,
           blocks: oldPost?.blocks,
         },
         onReady: () => {
@@ -115,9 +115,9 @@ const useEditor = (user : User, onChange?: (event) => void, post?: Post) : UseEd
     try {
       setIsLoading(true);
       const newData = await editor.save();
-      const postToSave : Post = {
+      const postToSave: Post = {
         ...post,
-        time: new Date(newData.time),
+        time: newData.time,
         blocks: newData.blocks,
         editorInfo: { version: newData.version },
       };
@@ -127,7 +127,6 @@ const useEditor = (user : User, onChange?: (event) => void, post?: Post) : UseEd
       setIsLoading(false);
       return postToSave;
     } catch (err) {
-      console.log(err);
       setError(err.message);
       setIsLoading(false);
       return null;

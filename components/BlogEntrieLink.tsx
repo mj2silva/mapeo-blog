@@ -2,6 +2,7 @@ import { FC } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { PostData } from '../lib/types';
+import { peruvianDateString } from '../lib/utils';
 
 type Props = {
   post: Partial<PostData>
@@ -15,16 +16,18 @@ const BlogEntrieLink : FC<Props> = (props : Props) => {
       <Link href={`/posts/${post.slug}`}>
         <a>
           <div className="blog-entrie-link__image">
-            <Image src="/image.png" alt="Post 1" layout="fill" objectFit="cover" objectPosition="center" />
+            <Image src={post.coverPictureUrl || '/img/post-blog.png'} alt="Post 1" layout="fill" objectFit="cover" objectPosition="center" />
           </div>
           <div className="blog-entrie-link__description">
-            <img src="/author.png" alt="post 1 author" width="50" height="50" />
+            <div className="blog-entrie-link__profile-picture">
+              <Image src={post.author.photoUrl} alt="post 1 author" layout="fill" />
+            </div>
             <div className="blog-entrie-link__tag">
               <span>Marketing Leaders (Placeholder para tags)</span>
               {' '}
               -
               {' '}
-              <span className="blog-entrie-link__date">{new Date(post.createdDate).toLocaleDateString()}</span>
+              <span className="blog-entrie-link__date">{peruvianDateString(post.createdDate)}</span>
             </div>
             <div className="blog-entrie-link__title">
               <h3>
@@ -34,7 +37,7 @@ const BlogEntrieLink : FC<Props> = (props : Props) => {
             <div className="blog-entrie-link__author">
               Por
               {' '}
-              <strong>{post.authorUId}</strong>
+              <strong>{post.author.name}</strong>
             </div>
           </div>
         </a>

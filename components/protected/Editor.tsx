@@ -12,7 +12,6 @@ type Props = {
   initEditor: (post?: Post) => void,
   holderId: string,
   savePreview: () => Promise<void>
-  // save: () => Promise<Post>
 }
 
 const hiddenClassName = 'hidden';

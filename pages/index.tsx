@@ -11,24 +11,34 @@ const renderBlogLinks = (
   blogPostList: PostData[],
 ) : ReactNode[] => blogPostList.map((blog) => <BlogEntrieLink key={`blg-link-${blog.slug}`} post={blog} />);
 
+type SerializedBlogPost = Omit<PostData, 'createdDate' | 'updatedDate'> & {
+  createdDate: number,
+  updatedDate: number,
+}
+
+const serializeBlogPost = (blog: PostData) : SerializedBlogPost => ({
+  ...blog,
+  createdDate: blog.createdDate.getTime(),
+  updatedDate: blog.updatedDate.getTime(),
+});
+
+const deserializeBlogPost = (serializedBlog: SerializedBlogPost) : PostData => ({
+  ...serializedBlog,
+  createdDate: new Date(serializedBlog.createdDate),
+  updatedDate: new Date(serializedBlog.updatedDate),
+});
+
 export const getStaticProps : GetStaticProps = async () => {
   const blogPosts = await getPublicBlogPosts();
-  const serializedBlogPosts = blogPosts.map((blog) => ({
-    ...blog,
-    createdDate: blog.createdDate.getTime(),
-    post: {
-      ...blog.post,
-      time: blog.post.time.getTime(),
-    },
-  }));
+  const serializedBlogPosts = blogPosts.map((blog) => serializeBlogPost(blog));
   return {
     props: { blogPosts: serializedBlogPosts },
-    revalidate: 3600000,
+    revalidate: 5000,
   };
 };
 
 type Props = {
-  blogPosts: PostData[]
+  blogPosts: SerializedBlogPost[]
 }
 
 const Home: FC<Props> = (props: Props) => {
@@ -60,7 +70,7 @@ const Home: FC<Props> = (props: Props) => {
       </section>
       <section className="blog-entries">
         <div className="blog-entries__row">
-          { renderBlogLinks(blogPosts) }
+          { renderBlogLinks(blogPosts.map((post) => deserializeBlogPost(post))) }
         </div>
 
         <div className="blog-entries__pagination">

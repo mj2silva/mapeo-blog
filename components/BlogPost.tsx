@@ -27,7 +27,7 @@ const BlogPost : FC<Props> = (props: Props) => {
         <div className="blogpost__author-name">
           Por
           {' '}
-          <strong>{ postData.authorUId }</strong>
+          <strong>{ postData.author?.name }</strong>
         </div>
         <div className="blogpost__date">
           { postData.createdDate?.toLocaleDateString('es-ES') || new Date().toLocaleDateString() }

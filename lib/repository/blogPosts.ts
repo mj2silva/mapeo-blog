@@ -1,24 +1,63 @@
 import firebase from 'firebase/app';
 
 import { firestore, fromMillis, fromDate } from '../firebase';
-import { PostData } from '../types';
+import { PostData, ServerPostData } from '../types';
+
+const mapServerPostToAppPost = (data: ServerPostData, postId: string) : PostData => {
+  const updatedDate = new Date(data.fechaDeActualizacion.toMillis());
+  const createdDate = new Date(data.fechaDeCreacion.toMillis());
+  const postData : PostData = {
+    id: postId,
+    coverPictureUrl: data.imagenDePortadaUrl || null,
+    author: (data.autor && {
+      name: data.autor.nombre,
+      photoUrl: data.autor.fotoUrl || null,
+      position: data.autor.posicion || null,
+      uid: data.autorId,
+    }) || null,
+    post: {
+      time: data.fechaDeActualizacion.toMillis(),
+      blocks: Object.keys(data.post).map((key) => data.post[key]),
+      editorInfo: {
+        version: data.metadata?.editorInfo?.version,
+      },
+    },
+    slug: data.slug,
+    isPublic: data.publicado,
+    title: data.titulo,
+    createdDate,
+    updatedDate,
+  };
+  return postData;
+};
+
+const mapAppPostToServerPost = (appPost: PostData) : ServerPostData => {
+  const serverPostData : ServerPostData = {
+    titulo: appPost.title,
+    autor: appPost.author && {
+      nombre: appPost.author.name,
+      fotoUrl: appPost.author.photoUrl || null,
+      posicion: appPost.author.position || null,
+    },
+    autorId: appPost.author?.uid,
+    publicado: appPost.isPublic,
+    slug: appPost.slug,
+    imagenDePortadaUrl: appPost.coverPictureUrl,
+    post: appPost.post?.blocks,
+    metadata: {
+      editorInfo: appPost.post.editorInfo,
+    },
+    fechaDeActualizacion: firebase.firestore.Timestamp.fromDate(appPost.updatedDate),
+    fechaDeCreacion: firebase.firestore.Timestamp.fromDate(appPost.createdDate),
+  };
+  return serverPostData;
+};
 
 const getBlogPost = async (postId: string) : Promise<PostData> => {
   const ref = firestore.collection('blogPosts');
   const post = await ref.doc(postId).get();
   const data = post.data();
-  const postData : PostData = {
-    id: post.id,
-    authorUId: data.autorId,
-    createdDate: data.fechaDeCreacion,
-    post: {
-      blocks: data.post,
-      editorInfo: data.metadata?.editorInfo?.version,
-    },
-    slug: data.slug,
-    isPublic: data.publicado,
-    title: data.titulo,
-  };
+  const postData = mapServerPostToAppPost(data as ServerPostData, post.id);
   return postData;
 };
 
@@ -40,19 +79,7 @@ const getUserBlogPosts = async (
   const postsData : PostData[] = [];
   posts.forEach((post) => {
     const data = post?.data();
-    const postData : PostData = {
-      id: post.id,
-      authorUId: data?.autorId,
-      createdDate: new Date(data.fechaDeCreacion.seconds * 1000),
-      post: {
-        blocks: Object.keys(data.post).map((key) => data.post[key]),
-        time: new Date(data.fechaDeActualizacion),
-        editorInfo: data.metadata?.editorInfo?.version,
-      },
-      slug: data?.slug,
-      isPublic: data?.publicado || false,
-      title: data?.titulo,
-    };
+    const postData = mapServerPostToAppPost(data as ServerPostData, post.id);
     postsData.push(postData);
   });
   return postsData;
@@ -62,21 +89,9 @@ const getBlogPostBySlug = async (slug: string) : Promise<PostData> => {
   const ref = firestore.collection('blogPosts');
   const posts = await ref.where('slug', '==', slug).limit(1).get();
   const postsData = [];
-  posts.forEach((post : firebase.firestore.QueryDocumentSnapshot) => {
-    const data = post.data();
-    const postData : PostData = {
-      id: post.id,
-      authorUId: data.autorId,
-      createdDate: new Date(data.fechaDeCreacion.seconds * 1000),
-      post: {
-        blocks: Object.keys(data.post).map((key) => data.post[key]),
-        time: new Date(data.fechaDeActualizacion),
-        editorInfo: data.metadata?.editorInfo?.version,
-      },
-      slug: data.slug,
-      isPublic: data.publicado,
-      title: data.titulo,
-    };
+  posts.forEach((post) => {
+    const data = post.data() as ServerPostData;
+    const postData = mapServerPostToAppPost(data, post.id);
     postsData.push(postData);
   });
   return postsData[0];
@@ -85,22 +100,7 @@ const getBlogPostBySlug = async (slug: string) : Promise<PostData> => {
 // Create
 const createBlogPost = async (postData: PostData) : Promise<void> => {
   const ref = firestore.collection('blogPosts');
-  const blogPost = {
-    autorId: postData.authorUId,
-    fechaDeCreacion: postData.createdDate || new Date(),
-    fechaDeActualizacion: postData.post.time || new Date(),
-    post: {
-      ...postData.post.blocks,
-    },
-    slug: postData.slug,
-    metadata: {
-      editorInfo: {
-        version: postData.post.editorInfo?.version,
-      },
-    },
-    publicado: postData.isPublic || false,
-    titulo: postData.title,
-  };
+  const blogPost = mapAppPostToServerPost(postData);
   const blogPostDoc = ref.doc();
   const batch = firestore.batch();
   batch.set(blogPostDoc, blogPost);
@@ -109,26 +109,14 @@ const createBlogPost = async (postData: PostData) : Promise<void> => {
 
 const getPublicBlogPosts = async () : Promise<PostData[]> => {
   const ref = firestore.collection('blogPosts');
-  const posts = await ref.where('publicado', '==', true)
+  const query = ref.where('publicado', '==', true)
     .orderBy('fechaDeCreacion', 'desc')
-    .limit(3)
-    .get();
+    .limit(3);
+  const posts = await query.get();
   const postsData : PostData[] = [];
   posts.forEach((post) => {
-    const data = post?.data();
-    const postData : PostData = {
-      id: post.id,
-      authorUId: data?.autorId,
-      createdDate: new Date(data.fechaDeCreacion.seconds * 1000),
-      post: {
-        blocks: Object.keys(data.post).map((key) => data.post[key]),
-        time: new Date(data.fechaDeActualizacion),
-        editorInfo: data.metadata?.editorInfo?.version,
-      },
-      slug: data?.slug,
-      isPublic: data?.publicado || false,
-      title: data?.titulo,
-    };
+    const data = post?.data() as ServerPostData;
+    const postData = mapServerPostToAppPost(data, post.id);
     postsData.push(postData);
   });
   return postsData;
@@ -145,9 +133,10 @@ const deletePost = async (postId : string) : Promise<string> => {
 };
 
 // Update
-const updateBlogPost = async (postId: string, postData: Partial<PostData>) : Promise<void> => {
+const updateBlogPost = async (postId: string, postData: PostData) : Promise<void> => {
   const ref = firestore.collection('blogPosts');
-  const blogPost = {
+  const blogPost = mapAppPostToServerPost(postData);
+  /* const blogPost = {
     fechaDeActualizacion: postData.post.time || new Date(),
     post: {
       ...postData.post.blocks,
@@ -160,7 +149,7 @@ const updateBlogPost = async (postId: string, postData: Partial<PostData>) : Pro
     },
     publicado: postData.isPublic || false,
     titulo: postData.title,
-  };
+  }; */
   const blogPostDoc = ref.doc(postId);
   const batch = firestore.batch();
   batch.update(blogPostDoc, blogPost);

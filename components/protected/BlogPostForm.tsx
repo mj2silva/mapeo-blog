@@ -22,18 +22,51 @@ const defaultProps : Partial<Props> = {
   postSlug: null,
 };
 
-const getInitialPostData = (user: User) : PostData => ({
-  authorUId: user.uid,
-  post: {
-    time: new Date(),
-    blocks: null,
-    editorInfo: { version: null },
-  },
-  slug: '',
-  createdDate: null,
-  isPublic: false,
-  title: '',
-});
+const getInitialPostData = (user: User) : PostData => {
+  const initialData = {
+    author: {
+      uid: user.uid,
+      name: user.displayName,
+      photoUrl: user.pictureUrl,
+      position: user.companyPosition,
+    },
+    post: {
+      time: new Date().getTime(),
+      blocks: null,
+      editorInfo: { version: null },
+    },
+    slug: '',
+    isPublic: false,
+    title: '',
+    createdDate: null,
+  };
+  return initialData;
+};
+
+const getImagesDataFromPostData = (postData: PostData) : {name?: string, url: string}[] => {
+  const imageList = postData.post.blocks
+    .filter((block) => block.type === 'image')
+    .map((imageBlock) => imageBlock.type === 'image' && imageBlock.data?.file);
+  return imageList;
+};
+
+const deleteUnusedImages = async (
+  initialPostData: PostData,
+  newPostData: PostData,
+  uploadedImages: { name?: string, url: string }[],
+  user: User,
+) : Promise<void> => {
+  const initialImages = getImagesDataFromPostData(initialPostData);
+  const finalImages = getImagesDataFromPostData(newPostData);
+  const initalImageNames = initialImages.map((imageData) => imageData?.name);
+  const finalImageNames = finalImages.map((imageData) => imageData?.name);
+  const uploadedImageNames = uploadedImages.map((imageData) => imageData?.name);
+  const allImages = Array.from(new Set([...initalImageNames, ...uploadedImageNames]));
+  const imagesToDelete = allImages.filter(
+    (imageData) => !finalImageNames.includes(imageData),
+  );
+  await Promise.all(imagesToDelete.map((imageUrl) => deleteImageAsync(`blog/postsImages/${user.uid}/images/${imageUrl}`)));
+};
 
 const BlogPostForm : FC<Props> = (props: Props) => {
   const { postSlug } = props;
@@ -41,10 +74,9 @@ const BlogPostForm : FC<Props> = (props: Props) => {
   const router = useRouter();
 
   const [postData, setPostData] = useState<PostData>(getInitialPostData(user));
+  const [initialPostData, setInitialPostData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [formError, setError] = useState(null);
-
-  const [initialImages, setInitialImages] = useState(null);
 
   const {
     editor, initEditor, holderId, error, save, uploadedImages,
@@ -87,23 +119,7 @@ const BlogPostForm : FC<Props> = (props: Props) => {
       const newPostData = await save();
       const dataToSave = { ...postData, post: newPostData };
       setPostData(dataToSave);
-      // Se obtienen la lista de imágenes que van en el blog
-      const finalImages = dataToSave.post.blocks
-        .filter((block) => block.type === 'image')
-        .map((imageBlock) => imageBlock.data?.file);
-      const finalImageNames = finalImages.map((imageData) => imageData?.name);
-      // Las imagenes que habían al principio
-      const initalImageNames = initialImages.map((imageData) => imageData?.name);
-      // Las que se han subido
-      const uploadedImageNames = uploadedImages.map((imageData) => imageData?.name);
-      // La suma de todas, las subidas y las que estaban
-      const allImages = Array.from(new Set([...initalImageNames, ...uploadedImageNames]));
-      // Se busca las imágenes que sobran para borrarlas
-      const imagesToDelete = allImages.filter(
-        (imageData) => !finalImageNames.includes(imageData),
-      );
-      // Se borran las imágenes descartadas
-      await Promise.all(imagesToDelete.map((imageUrl) => deleteImageAsync(`blog/postsImages/${user.uid}/images/${imageUrl}`)));
+      await deleteUnusedImages(initialPostData, dataToSave, uploadedImages, user);
       if (postData.id) await updateBlogPost(dataToSave.id, dataToSave);
       else {
         await createBlogPost(dataToSave);
@@ -122,12 +138,12 @@ const BlogPostForm : FC<Props> = (props: Props) => {
       if (postSlug) {
         setIsLoading(true);
         try {
-          const oldPostData = await getBlogPostBySlug(postSlug);
-          setPostData(oldPostData);
-          const usedImages = oldPostData.post.blocks
-            .filter((block) => block.type === 'image')
-            .map((imageBlock) => imageBlock.data?.file);
-          setInitialImages(usedImages);
+          const existingPostData = await getBlogPostBySlug(postSlug);
+          setPostData((prevData) => ({
+            ...existingPostData,
+            author: existingPostData.author || prevData.author,
+          }));
+          setInitialPostData(existingPostData);
         } catch (err) {
           setError(err);
           router.push('/internal/nuevo-post');
