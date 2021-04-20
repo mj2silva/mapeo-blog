@@ -44,10 +44,10 @@ const getInitialPostData = (user: User) : PostData => {
 };
 
 const getImagesDataFromPostData = (postData: PostData) : {name?: string, url: string}[] => {
-  const imageList = postData.post.blocks
+  const imageList = postData?.post.blocks
     .filter((block) => block.type === 'image')
     .map((imageBlock) => imageBlock.type === 'image' && imageBlock.data?.file);
-  return imageList;
+  return imageList || [];
 };
 
 const deleteUnusedImages = async (

@@ -1,6 +1,6 @@
-import Image from 'next/image';
 import { FC } from 'react';
 import { PostData } from '../lib/types';
+import PostBlock from './postBlocks/PostBlock';
 
 type Props = {
   postData: PostData,
@@ -41,34 +41,7 @@ const BlogPost : FC<Props> = (props: Props) => {
         </div>
       </div>
       <div className="blogpost__content">
-        { (postData.post?.blocks?.map((block, index) => {
-          if (block.type === 'paragraph') {
-            return (
-              <p
-                key={block.data.text.slice(0, 3) + index.toString()}
-              >
-                {block.data.text}
-              </p>
-            );
-          }
-          if (block.type === 'header') {
-            return (
-              <h3
-                key={block.data.text.slice(0, 3) + index.toString()}
-              >
-                {block.data.text}
-              </h3>
-            );
-          }
-          if (block.type === 'image') {
-            return (
-              <div className="blogpost__image-container" style={{ width: '40rem', height: '20rem', position: 'relative' }}>
-                <Image src={block.data.file.url} layout="fill" objectFit="contain" />
-              </div>
-            );
-          }
-          return null;
-        })) }
+        { (postData.post?.blocks?.map((block, index) => <PostBlock key={`${block.type}-${index * 2}`} block={block} />)) }
       </div>
       <div className="blogpost__comment-form">
         <form>

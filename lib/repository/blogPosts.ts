@@ -47,8 +47,8 @@ const mapAppPostToServerPost = (appPost: PostData) : ServerPostData => {
     metadata: {
       editorInfo: appPost.post.editorInfo,
     },
-    fechaDeActualizacion: firebase.firestore.Timestamp.fromDate(appPost.updatedDate),
-    fechaDeCreacion: firebase.firestore.Timestamp.fromDate(appPost.createdDate),
+    fechaDeActualizacion: firebase.firestore.Timestamp.fromDate(appPost.updatedDate || new Date()),
+    fechaDeCreacion: firebase.firestore.Timestamp.fromDate(appPost.createdDate || new Date()),
   };
   return serverPostData;
 };
@@ -116,7 +116,12 @@ const getPublicBlogPostBySlug = async (slug: string) : Promise<PostData> => {
 // Create
 const createBlogPost = async (postData: PostData) : Promise<void> => {
   const ref = firestore.collection('blogPosts');
-  const blogPost = mapAppPostToServerPost(postData);
+  const createdDate = new Date();
+  const blogPost = mapAppPostToServerPost({
+    ...postData,
+    createdDate,
+    updatedDate: createdDate,
+  });
   const blogPostDoc = ref.doc();
   const batch = firestore.batch();
   batch.set(blogPostDoc, blogPost);

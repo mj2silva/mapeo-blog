@@ -5,14 +5,19 @@ import { PostData } from '../lib/types';
 import { peruvianDateString } from '../lib/utils';
 
 type Props = {
-  post: Partial<PostData>
+  post: Partial<PostData>,
+  isPreview?: boolean,
 }
 
+const defaultProps: Partial<Props> = {
+  isPreview: false,
+};
+
 const BlogEntrieLink : FC<Props> = (props : Props) => {
-  const { post } = props;
+  const { post, isPreview } = props;
 
   return (
-    <div className="blog-entrie-link">
+    <div className={`blog-entrie-link ${isPreview ? 'blog-entrie-link--preview' : ''}`}>
       <Link href={`/posts/${post.slug}`}>
         <a>
           <div className="blog-entrie-link__image">
@@ -45,5 +50,7 @@ const BlogEntrieLink : FC<Props> = (props : Props) => {
     </div>
   );
 };
+
+BlogEntrieLink.defaultProps = defaultProps;
 
 export default BlogEntrieLink;

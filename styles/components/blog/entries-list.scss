@@ -41,6 +41,14 @@
   box-shadow: 4px 4px 4px 0px rgba(0,0,0,0.38);
   background-color: $white;
   transition-duration: 500ms;
+  &--preview {
+    margin: 1rem auto;
+    width: 80%;
+    & > a {
+      pointer-events: none;
+      cursor: not-allowed;
+    }
+  }
   &:hover {
     z-index: 5;
     transform: scale(1.05);

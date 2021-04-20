@@ -3,6 +3,7 @@ import {
 } from 'react';
 
 import { Post, PostData } from '../../lib/types';
+import BlogEntrieLink from '../BlogEntrieLink';
 import BlogPost from '../BlogPost';
 import ToggleButton from '../common/ToggleButton';
 
@@ -45,7 +46,12 @@ const Editor : FC<Props> = (props : Props) => {
       </div>
       <div id={holderId} className={isPreview ? hiddenClassName : editorClassName} />
       <div className={!isPreview ? hiddenClassName : blogPostClassName}>
-        { post && <BlogPost postData={post} isPreview /> }
+        { post && (
+          <>
+            <BlogPost postData={post} isPreview />
+            <BlogEntrieLink post={post} isPreview />
+          </>
+        ) }
       </div>
     </>
   );

@@ -48,6 +48,8 @@
       width: 5rem;
       height: 5rem;
       margin: 1rem;
+      border-radius: 50%;
+      overflow: hidden;
       & img {
         width: 100%;
         height: 100%;
@@ -93,6 +95,7 @@
     font-size: 1rem;
     margin-bottom: 1rem;
     text-align: justify;
+    width: 100%;
   }
   &__comment-form {
     background-color: $darkBlue;
@@ -147,6 +150,87 @@
         font-size: inherit;
         font-family: inherit;
       }
+    }
+  }
+  &__paragraph {
+    font-size: 1rem;
+    font-family: $gilroy;
+    & a {
+      color: $blue;
+      &:hover {
+        color: $blue;
+        text-decoration: underline;
+      }
+    }
+  }
+  &__quote {
+    & blockquote {
+      margin: 0;
+      font-style: italic;
+      &::before {
+        content: '"';
+      }
+      &::after {
+        content: '"';
+      }
+    }
+    & figcaption {
+      display: block;
+      width: 100%;
+      text-align: end;
+      font-weight: bold;
+    }
+    &--center {
+      & blockquote {
+        text-align: center;
+      }
+    }
+  }
+  &__embed {
+    width: 100%;
+    margin: 0;
+    embed {
+      width: 100%;
+    }
+  }
+  &__image-container {
+    margin: 0 auto;
+    margin-bottom: 3rem;
+    width: 100%;
+    & > figure {
+      position: relative;
+      width: 80%;
+      height: 20rem;
+      margin: 0 auto;
+    }
+    & figcaption {
+      position: absolute;
+      bottom: -1rem;
+      display: block;
+      width: 100%;
+      text-align: center;
+    }
+    & img {
+      object-position: center;
+      object-fit: contain;
+    }
+    &--streched {
+      & > figure {
+        width: 100%;
+        height: 25rem;
+        margin: 0 auto;
+      }
+    }
+    &--with-background {
+      background-color: skyblue;
+      width: 100%;
+      & > figure {
+        width: 80%;
+        margin: 0 auto;
+      }
+    }
+    &--with-border {
+      border: 1px solid $blue;
     }
   }
   @media screen and (max-width: $breakpoint-laptop){
