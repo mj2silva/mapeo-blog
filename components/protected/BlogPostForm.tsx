@@ -3,7 +3,7 @@ import {
 } from 'react';
 import { useRouter } from 'next/router';
 
-import { deleteImageAsync } from '../../lib/repository/files';
+import { deleteImageAsync, uploadImageAsync } from '../../lib/repository/files';
 import { createBlogPost, getBlogPostBySlug, updateBlogPost } from '../../lib/repository/blogPosts';
 import { PostData, User } from '../../lib/types';
 import useEditor from '../../lib/useEditor';
@@ -74,6 +74,7 @@ const BlogPostForm : FC<Props> = (props: Props) => {
   const router = useRouter();
 
   const [postData, setPostData] = useState<PostData>(getInitialPostData(user));
+  const [selectedCover, setSelectedCover] = useState<File>(null);
   const [initialPostData, setInitialPostData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [formError, setError] = useState(null);
@@ -106,6 +107,12 @@ const BlogPostForm : FC<Props> = (props: Props) => {
     });
   };
 
+  const handleFileChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
+    event.preventDefault();
+    const file = Array.from(event.target.files)[0];
+    setSelectedCover(file);
+  };
+
   const savePreview = async () : Promise<void> => {
     const newPostData = await save();
     const dataToSave = { ...postData, post: newPostData };
@@ -117,7 +124,10 @@ const BlogPostForm : FC<Props> = (props: Props) => {
     setIsLoading(true);
     try {
       const newPostData = await save();
-      const dataToSave = { ...postData, post: newPostData };
+      const coverPictureUrl = selectedCover !== null
+        ? await uploadImageAsync(selectedCover, `blog/postsImages/${user.uid}/covers`)
+        : null;
+      const dataToSave: PostData = { ...postData, post: newPostData, coverPictureUrl };
       setPostData(dataToSave);
       await deleteUnusedImages(initialPostData, dataToSave, uploadedImages, user);
       if (postData.id) await updateBlogPost(dataToSave.id, dataToSave);
@@ -163,6 +173,10 @@ const BlogPostForm : FC<Props> = (props: Props) => {
         <label className="editor__form-input" htmlFor="title">
           <span>Título del post:</span>
           <input value={postData.title || ''} onChange={handleTitleChange} type="text" name="title" required />
+        </label>
+        <label htmlFor="coverPicture" className="editor__form-input editor__form-input--file">
+          <div className="configuration__form-label">Cambiar foto de portada</div>
+          <input name="coverPicture" type="file" onChange={handleFileChange} />
         </label>
         <label className="editor__form-input" htmlFor="slug">
           <span>Url personalizada (blog.mapeo.pe/post/[tu-url]):</span>

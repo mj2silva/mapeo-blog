@@ -26,6 +26,26 @@
         border-color: $yellow;
       }
     }
+    &--file {
+      & input {
+        border-radius: 0;
+        padding: 0;
+        border: none;
+        &::-webkit-file-upload-button {
+          background-color: $yellow;
+          font-family: $gilroy;
+          border: none;
+          border-radius: 8px;
+          padding: .5rem;
+          transition-duration: 500ms;
+          &:hover {
+            background-color: $yellowHover;
+          }
+          cursor: pointer;
+        }
+      }
+    }
+    
     &--checkbox {
       flex-direction: row;
       min-width: 10rem;

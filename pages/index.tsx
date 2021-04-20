@@ -17,7 +17,7 @@ export const getStaticProps : GetStaticProps = async () => {
   const serializedBlogPosts = blogPosts.map((blog) => serializeBlogPost(blog));
   return {
     props: { blogPosts: serializedBlogPosts },
-    revalidate: 5000,
+    revalidate: 10,
   };
 };
 

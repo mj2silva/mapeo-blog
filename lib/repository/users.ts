@@ -33,3 +33,12 @@ export const updateDisplayName = async (user: User, displayName: string) : Promi
     displayName,
   });
 };
+
+export const updateCompanyPosition = async (
+  user: User, companyPosition: string,
+) : Promise<void> => {
+  const userRef = firestore.doc(`blogUsers/${user.uid}`);
+  await userRef.update({
+    companyPosition,
+  });
+};
