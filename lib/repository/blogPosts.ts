@@ -130,6 +130,17 @@ export const createBlogPost = async (postData: PostData) : Promise<void> => {
   });
   const blogPostDoc = ref.doc();
   const batch = firestore.batch();
+  if (postData.tags) {
+    const { tags } = postData;
+    const tagsRef = firestore.collection(blogTagsCollection);
+    tags.forEach((tag) => {
+      const doc = tagsRef.doc(tag.toUpperCase());
+      const tagPosts = doc.collection('tagPosts');
+      const postId = blogPostDoc.id;
+      const postDoc = tagPosts.doc(postId);
+      batch.set(postDoc, { postId });
+    });
+  }
   batch.set(blogPostDoc, blogPost);
   await batch.commit();
 };
@@ -160,11 +171,39 @@ export const deletePost = async (postId : string) : Promise<string> => {
 };
 
 // Update
-export const updateBlogPost = async (postId: string, postData: PostData) : Promise<void> => {
+export const deleteTagsFromPost = async (tags: string[], postId: string) : Promise<void> => {
+  const deleteTag = async (tag: string) : Promise<void> => {
+    const ref = firestore.collection(blogTagsCollection);
+    const doc = ref.doc(tag.toUpperCase());
+    const postsRef = doc.collection('tagPosts');
+    const postDoc = postsRef.doc(postId);
+    const { exists } = await postDoc.get();
+    if (exists) await doc.delete();
+  };
+  const deletePostPromises = tags.map((tag) => deleteTag(tag));
+  await Promise.all(deletePostPromises);
+};
+
+export const updateBlogPost = async (
+  postId: string, postData: PostData, tagsToDelete: string[] = null,
+) : Promise<void> => {
   const ref = firestore.collection(blogPostsCollection);
+  const batch = firestore.batch();
   const blogPost = mapAppPostToServerPost(postData);
   const blogPostDoc = ref.doc(postId);
-  const batch = firestore.batch();
+  const tagsRef = firestore.collection(blogTagsCollection);
+  tagsToDelete?.forEach((tag) => {
+    const doc = tagsRef.doc(tag.toUpperCase());
+    const postsRef = doc.collection('tagPosts');
+    const postDoc = postsRef.doc(postId);
+    batch.delete(postDoc);
+  });
+  postData.tags?.forEach((tag) => {
+    const doc = tagsRef.doc(tag.toUpperCase());
+    const postsRef = doc.collection('tagPosts');
+    const postDoc = postsRef.doc(postId);
+    batch.set(postDoc, { postId });
+  });
   batch.update(blogPostDoc, blogPost);
   await batch.commit();
 };
@@ -182,4 +221,19 @@ export const createTag = async (tag: string, postId: string = null) : Promise<vo
   await doc.set({
     post: postId ? [postId] : null,
   });
+};
+
+export const updateTagPostsList = async (tag: string, postId: string) : Promise<void> => {
+  const ref = firestore.collection(blogTagsCollection);
+  const doc = ref.doc(tag.toUpperCase());
+  const tagPosts = doc.collection('tagPosts');
+  const postDoc = tagPosts.doc(postId);
+  await postDoc.set({
+    postId,
+  });
+};
+
+export const savePostTags = async (tags: string[], postId: string) : Promise<void> => {
+  const updateTasks = tags.map((tag) => updateTagPostsList(tag, postId));
+  await Promise.all(updateTasks);
 };
