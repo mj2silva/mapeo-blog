@@ -39,6 +39,7 @@ const getInitialPostData = (user: User) : PostData => {
     isPublic: false,
     title: '',
     createdDate: null,
+    tags: null,
   };
   return initialData;
 };

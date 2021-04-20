@@ -86,6 +86,7 @@ export type PostData = {
   createdDate?: Date,
   updatedDate?: Date,
   isPublic?: boolean,
+  tags?: string[],
 }
 
 export type User = firebase.User & {
@@ -118,6 +119,7 @@ export type ServerPostData = {
   publicado: boolean,
   slug: string,
   titulo: string,
+  tags?: string[],
 }
 
 export type SerializedBlogPost = Omit<PostData, 'createdDate' | 'updatedDate'> & {

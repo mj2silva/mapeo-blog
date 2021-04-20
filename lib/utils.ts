@@ -15,6 +15,7 @@ export const peruvianDateString = (date: Date) : string => {
 
 export const serializeBlogPost = (blog: PostData) : SerializedBlogPost => ({
   ...blog,
+  tags: blog.tags || null,
   createdDate: blog.createdDate.getTime(),
   updatedDate: blog.updatedDate.getTime(),
 });

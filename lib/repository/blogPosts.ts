@@ -2,8 +2,12 @@ import firebase from 'firebase/app';
 
 import { firestore, fromMillis, fromDate } from '../firebase';
 import { PostData, ServerPostData } from '../types';
+import DatabaseCollections from './collections';
 
-const mapServerPostToAppPost = (data: ServerPostData, postId: string) : PostData => {
+const blogPostsCollection = DatabaseCollections.blogPosts;
+const blogTagsCollection = DatabaseCollections.blogTags;
+
+export const mapServerPostToAppPost = (data: ServerPostData, postId: string) : PostData => {
   const updatedDate = new Date(data.fechaDeActualizacion.toMillis());
   const createdDate = new Date(data.fechaDeCreacion.toMillis());
   const postData : PostData = {
@@ -25,13 +29,14 @@ const mapServerPostToAppPost = (data: ServerPostData, postId: string) : PostData
     slug: data.slug,
     isPublic: data.publicado,
     title: data.titulo,
+    tags: data.tags || null,
     createdDate,
     updatedDate,
   };
   return postData;
 };
 
-const mapAppPostToServerPost = (appPost: PostData) : ServerPostData => {
+export const mapAppPostToServerPost = (appPost: PostData) : ServerPostData => {
   const serverPostData : ServerPostData = {
     titulo: appPost.title,
     autor: appPost.author && {
@@ -47,14 +52,15 @@ const mapAppPostToServerPost = (appPost: PostData) : ServerPostData => {
     metadata: {
       editorInfo: appPost.post.editorInfo,
     },
+    tags: appPost.tags || null,
     fechaDeActualizacion: firebase.firestore.Timestamp.fromDate(appPost.updatedDate || new Date()),
     fechaDeCreacion: firebase.firestore.Timestamp.fromDate(appPost.createdDate || new Date()),
   };
   return serverPostData;
 };
 
-const getBlogPost = async (postId: string) : Promise<PostData> => {
-  const ref = firestore.collection('blogPosts');
+export const getBlogPost = async (postId: string) : Promise<PostData> => {
+  const ref = firestore.collection(blogPostsCollection);
   const post = await ref.doc(postId).get();
   const data = post.data();
   const postData = mapServerPostToAppPost(data as ServerPostData, post.id);
@@ -66,11 +72,11 @@ type getBlogPostsOptions = {
   cursor?: number | Date
 }
 
-const getUserBlogPosts = async (
+export const getUserBlogPosts = async (
   uid: string, options: getBlogPostsOptions,
 ) : Promise<PostData[]> => {
   const cursor = options.cursor && (typeof options.cursor === 'number' ? fromMillis(options?.cursor) : fromDate(options?.cursor));
-  const ref = firestore.collection('blogPosts');
+  const ref = firestore.collection(blogPostsCollection);
   const posts = await ref.where('autorId', '==', uid)
     .orderBy('fechaDeCreacion', 'desc')
     .startAfter(cursor || fromDate(new Date()))
@@ -85,8 +91,8 @@ const getUserBlogPosts = async (
   return postsData;
 };
 
-const getBlogPostBySlug = async (slug: string) : Promise<PostData> => {
-  const ref = firestore.collection('blogPosts');
+export const getBlogPostBySlug = async (slug: string) : Promise<PostData> => {
+  const ref = firestore.collection(blogPostsCollection);
   const posts = await ref.where('slug', '==', slug).limit(1).get();
   const postsData = [];
   posts.forEach((post) => {
@@ -97,8 +103,8 @@ const getBlogPostBySlug = async (slug: string) : Promise<PostData> => {
   return postsData[0];
 };
 
-const getPublicBlogPostBySlug = async (slug: string) : Promise<PostData> => {
-  const ref = firestore.collection('blogPosts');
+export const getPublicBlogPostBySlug = async (slug: string) : Promise<PostData> => {
+  const ref = firestore.collection(blogPostsCollection);
   const posts = await ref
     .where('publicado', '==', true)
     .where('slug', '==', slug)
@@ -114,8 +120,8 @@ const getPublicBlogPostBySlug = async (slug: string) : Promise<PostData> => {
 };
 
 // Create
-const createBlogPost = async (postData: PostData) : Promise<void> => {
-  const ref = firestore.collection('blogPosts');
+export const createBlogPost = async (postData: PostData) : Promise<void> => {
+  const ref = firestore.collection(blogPostsCollection);
   const createdDate = new Date();
   const blogPost = mapAppPostToServerPost({
     ...postData,
@@ -128,8 +134,8 @@ const createBlogPost = async (postData: PostData) : Promise<void> => {
   await batch.commit();
 };
 
-const getPublicBlogPosts = async () : Promise<PostData[]> => {
-  const ref = firestore.collection('blogPosts');
+export const getPublicBlogPosts = async () : Promise<PostData[]> => {
+  const ref = firestore.collection(blogPostsCollection);
   const query = ref.where('publicado', '==', true)
     .orderBy('fechaDeCreacion', 'desc')
     .limit(3);
@@ -144,7 +150,7 @@ const getPublicBlogPosts = async () : Promise<PostData[]> => {
 };
 
 // Delete
-const deletePost = async (postId : string) : Promise<string> => {
+export const deletePost = async (postId : string) : Promise<string> => {
   const promise = new Promise<string>((resolve) => {
     setTimeout(() => {
       resolve(postId);
@@ -154,8 +160,8 @@ const deletePost = async (postId : string) : Promise<string> => {
 };
 
 // Update
-const updateBlogPost = async (postId: string, postData: PostData) : Promise<void> => {
-  const ref = firestore.collection('blogPosts');
+export const updateBlogPost = async (postId: string, postData: PostData) : Promise<void> => {
+  const ref = firestore.collection(blogPostsCollection);
   const blogPost = mapAppPostToServerPost(postData);
   const blogPostDoc = ref.doc(postId);
   const batch = firestore.batch();
@@ -163,13 +169,17 @@ const updateBlogPost = async (postId: string, postData: PostData) : Promise<void
   await batch.commit();
 };
 
-export {
-  createBlogPost,
-  getBlogPost,
-  getUserBlogPosts,
-  getBlogPostBySlug,
-  getPublicBlogPostBySlug,
-  getPublicBlogPosts,
-  deletePost,
-  updateBlogPost,
+// BlogPostTags
+export const verifyTagExists = async (tag: string) : Promise<boolean> => {
+  const ref = firestore.doc(`${blogTagsCollection}/${tag}`);
+  const { exists } = await ref.get();
+  return exists;
+};
+
+export const createTag = async (tag: string, postId: string = null) : Promise<void> => {
+  const ref = firestore.collection(blogTagsCollection);
+  const doc = ref.doc(tag.toUpperCase());
+  await doc.set({
+    post: postId ? [postId] : null,
+  });
 };

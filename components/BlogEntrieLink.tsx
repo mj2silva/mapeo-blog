@@ -32,7 +32,7 @@ const BlogEntrieLink : FC<Props> = (props : Props) => {
               {' '}
               -
               {' '}
-              <span className="blog-entrie-link__date">{peruvianDateString(post.createdDate)}</span>
+              <span className="blog-entrie-link__date">{peruvianDateString(post.createdDate || new Date())}</span>
             </div>
             <div className="blog-entrie-link__title">
               <h3>

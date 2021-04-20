@@ -49,6 +49,8 @@ const Editor : FC<Props> = (props : Props) => {
         { post && (
           <>
             <BlogPost postData={post} isPreview />
+            <hr />
+            <h3 style={{ margin: '1rem 10%' }}>Vista previa del enlace:</h3>
             <BlogEntrieLink post={post} isPreview />
           </>
         ) }

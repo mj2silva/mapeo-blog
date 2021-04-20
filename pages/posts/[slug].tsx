@@ -2,6 +2,7 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import { FC, useState } from 'react';
 import BlogPost from '../../components/BlogPost';
+import BlogPostCommentForm from '../../components/BlogPostCommentForm';
 import { getPublicBlogPostBySlug, getPublicBlogPosts } from '../../lib/repository/blogPosts';
 import { SerializedBlogPost } from '../../lib/types';
 import { deserializeBlogPost, serializeBlogPost } from '../../lib/utils';
@@ -81,23 +82,7 @@ const BlogPostPage : FC<Props> = (props: Props) => {
           </div>
         </section>
         <BlogPost postData={blogPost} isPreview={false} />
-        {/* <div className="blogpost__abstract">
-            <summary>
-              <p>
-                { blogPost.abstract }
-              </p>
-            </summary>
-          </div> */}
-        {/* <div className="blogpost__content">
-            { (blogPost.post.blocks.map((parragraph, index) => (
-              <p
-                key={parragraph.data.(0, 3) + index.toString()}
-              >
-                {parragraph}
-              </p>
-            ))) }
-          </div> */}
-        {/* <PostRecomendations recomendedBlogPosts={recomendedBlogPosts} /> */}
+        <BlogPostCommentForm />
       </main>
     )
   );
