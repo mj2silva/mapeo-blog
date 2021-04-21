@@ -4,6 +4,7 @@ import { FC } from 'react';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { deletePost } from '../../lib/repository/blogPosts';
+import { PostData } from '../../lib/types';
 import { SpinnerColors } from '../common/Spinner';
 
 const mapeoSwal = Swal.mixin({
@@ -37,23 +38,23 @@ const WarningIcon : FC = () => (
 );
 
 type Props = {
-  postId: string,
+  post: PostData,
 }
 
 const DeletePostButton : FC<Props> = (props : Props) => {
-  const { postId } = props;
+  const { post } = props;
   const className = 'user-post__control user-post__control--delete';
   const handleDeletePost = async () : Promise<void> => {
     const swalResponse = await RMapeoSwal.fire({
       preConfirm: async () => {
-        const deletedPost = await deletePost(postId);
-        return deletedPost;
+        await deletePost(post);
+        return post.title;
       },
       title: (
         <h3 className="alert__title">
           ¿Estás seguro de que deseas eliminar el post
           {' '}
-          {postId}
+          {post.title}
           ?
         </h3>),
       html: <p className="alert__text">Una vez que borres, el post no podrá ser recuperado</p>,
@@ -71,7 +72,7 @@ const DeletePostButton : FC<Props> = (props : Props) => {
           </h3>),
         html: (
           <p className="alert__text">
-            Se ha eliminado correctamente el post con el id:
+            Se ha eliminado correctamente el post:
             {' '}
             {swalResponse.value}
           </p>),

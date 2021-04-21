@@ -18,25 +18,37 @@ const UserPosts : FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [posts, setPosts] = useState<PostData[]>(null);
   const [error, setError] = useState(null);
+  const [userSubs, setUserSubs] = useState([]);
+  // Efecto para cancelar las suscripciones cuando el componente es desmontado
 
   useEffect(() => {
     const loadUserPosts = async () : Promise<void> => {
       try {
         setIsLoading(true);
-        const loadedPosts = await getUserBlogPosts(user.uid, { limit: LIMIT });
+        const [loadedPosts, cancelPostSub] = await getUserBlogPosts(
+          user.uid, { limit: LIMIT }, (data) => setPosts(data),
+        );
         setPosts(loadedPosts);
+        setIsLoading(false);
+        setUserSubs((prev) => [...prev, cancelPostSub]);
       } catch (err) {
         setError(err.message);
-      } finally {
         setIsLoading(false);
       }
     };
     loadUserPosts();
+    return userSubs.forEach((cancelSub) => {
+      cancelSub();
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const getMorePosts = async () : Promise<boolean> => {
     const last = posts[posts.length - 1];
-    const newPosts = await getUserBlogPosts(user.uid, { limit: LIMIT, cursor: last.createdDate });
+    const [newPosts, cancelPostSub] = await getUserBlogPosts(
+      user.uid, { limit: LIMIT, cursor: last.createdDate }, (data) => setPosts(posts.concat(data)),
+    );
+    setUserSubs((prev) => [...prev, cancelPostSub]);
     setPosts(posts.concat(newPosts));
     return newPosts.length < LIMIT;
   };

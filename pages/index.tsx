@@ -41,8 +41,12 @@ const Home: FC<Props> = (props: Props) => {
 
   const onTagsChange = async (selectedTags: string[]): Promise<void> => {
     setIsLoading(true);
-    const newPosts = await getPublicBlogPostsByTag(selectedTags);
-    setRequestedPosts(newPosts);
+    if (selectedTags.length > 0) {
+      const newPosts = await getPublicBlogPostsByTag(selectedTags);
+      setRequestedPosts(newPosts);
+    } else {
+      setRequestedPosts([]);
+    }
     setIsLoading(false);
   };
 

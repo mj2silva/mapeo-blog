@@ -15,7 +15,7 @@ const defaultProps: Partial<Props> = {
 
 const BlogTags : FC<Props> = (props: Props) => {
   const { onTagsChange, tags, selectedTag } = props;
-  const [currentSelected, setCurrentSelected] = useState<string[]>([selectedTag]);
+  const [currentSelected, setCurrentSelected] = useState<string[]>([]);
 
   const handleClick = (tag: string, active: boolean) : void => {
     if (active) {

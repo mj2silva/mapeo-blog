@@ -20,10 +20,10 @@ const BlogPost : FC<Props> = (props: Props) => {
         <h3>
           { postData.tags?.map((tag, index) => {
             if (index === postData.tags.length - 1) {
-              return (<span>{tag}</span>);
+              return (<span key={`blp-${tag}`}>{tag}</span>);
             }
             return (
-              <span>
+              <span key={`blp-${tag}`}>
                 {tag}
                 ,
                 {' '}

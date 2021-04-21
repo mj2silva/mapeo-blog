@@ -18,7 +18,7 @@ const UserPost : FC<Props> = (props : Props) => {
         <CustomLink href={`/internal/posts/${post.slug}`} className="link user-post__title">{ post.title }</CustomLink>
         <div className="user-post__controls">
           <EditPostButton postSlug={post.slug} />
-          <DeletePostButton postId={post.id} />
+          <DeletePostButton post={post} />
         </div>
       </div>
       <div className="user-post__date">{ `Creado el ${post.createdDate?.toLocaleDateString()} a las ${post.createdDate.toLocaleTimeString()}` }</div>

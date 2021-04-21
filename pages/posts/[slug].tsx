@@ -1,9 +1,11 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { FC, useState } from 'react';
 import BlogHead from '../../components/BlogHead';
 import BlogPost from '../../components/BlogPost';
 import PostRecomendations from '../../components/PostsRecomendations';
+import ScheduleMeeting from '../../components/ScheduleMeeting';
 import {
   getPostTags, getPublicBlogPostBySlug, getPublicBlogPosts, getRelatedPosts,
 } from '../../lib/repository/blogPosts';
@@ -61,6 +63,15 @@ const BlogPostPage : FC<Props> = (props: Props) => {
   const { postData, tags, relatedPostsData } = props;
   const [blogPost] = useState(deserializeBlogPost(postData));
   const [relatedPosts] = useState(relatedPostsData?.map((post) => deserializeBlogPost(post)));
+  const router = useRouter();
+  const handleSelectTag = (selectedTags: string[]) : void => {
+    router.push({
+      pathname: '/',
+      query: {
+        tag: selectedTags[0],
+      },
+    });
+  };
   return (
     (!blogPost) ? <div>Loading...</div> : (
       <main className="main">
@@ -71,9 +82,10 @@ const BlogPostPage : FC<Props> = (props: Props) => {
             - Mapeo
           </title>
         </Head>
-        <BlogHead tags={tags} />
+        <BlogHead onTagsChange={handleSelectTag} tags={tags} />
         <BlogPost postData={blogPost} isPreview={false} />
         <PostRecomendations recomendedBlogPosts={relatedPosts} />
+        <ScheduleMeeting />
       </main>
     )
   );

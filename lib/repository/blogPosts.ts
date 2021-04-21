@@ -1,8 +1,11 @@
 import firebase from 'firebase/app';
 
 import { firestore, fromMillis, fromDate } from '../firebase';
-import { PostData, ServerPostData } from '../types';
+import {
+  PostBlock, PostData, ServerPostData,
+} from '../types';
 import DatabaseCollections from './collections';
+import { deleteImageAsync } from './files';
 
 const blogPostsCollection = DatabaseCollections.blogPosts;
 const blogTagsCollection = DatabaseCollections.blogTags;
@@ -73,22 +76,37 @@ type getBlogPostsOptions = {
 }
 
 export const getUserBlogPosts = async (
-  uid: string, options: getBlogPostsOptions,
-) : Promise<PostData[]> => {
+  uid: string,
+  options: getBlogPostsOptions,
+  updateFunction: (data: PostData[]) => Promise<void> | void = null,
+) : Promise<[PostData[], (() => void
+)]> => {
+  let cancelSnapshot;
   const cursor = options.cursor && (typeof options.cursor === 'number' ? fromMillis(options?.cursor) : fromDate(options?.cursor));
   const ref = firestore.collection(blogPostsCollection);
-  const posts = await ref.where('autorId', '==', uid)
+  const query = ref.where('autorId', '==', uid)
     .orderBy('fechaDeCreacion', 'desc')
     .startAfter(cursor || fromDate(new Date()))
-    .limit(options?.limit || 100)
-    .get();
+    .limit(options?.limit || 100);
+  const posts = await query.get();
   const postsData : PostData[] = [];
+  if (updateFunction) {
+    cancelSnapshot = query.onSnapshot(async (postsSnapshot) => {
+      const snapshotData : PostData[] = [];
+      postsSnapshot.forEach(async (post) => {
+        const data = post?.data();
+        const postData = mapServerPostToAppPost(data as ServerPostData, post.id);
+        snapshotData.push(postData);
+      });
+      await updateFunction(snapshotData);
+    });
+  }
   posts.forEach((post) => {
     const data = post?.data();
     const postData = mapServerPostToAppPost(data as ServerPostData, post.id);
     postsData.push(postData);
   });
-  return postsData;
+  return [postsData, cancelSnapshot];
 };
 
 export const getBlogPostBySlug = async (slug: string) : Promise<PostData> => {
@@ -174,16 +192,6 @@ export const getPublicBlogPostsByTag = async (tags: string[]) : Promise<PostData
     postsData.push(postData);
   });
   return postsData;
-};
-
-// Delete
-export const deletePost = async (postId : string) : Promise<string> => {
-  const promise = new Promise<string>((resolve) => {
-    setTimeout(() => {
-      resolve(postId);
-    }, 3000);
-  });
-  return promise;
 };
 
 // Update
@@ -283,4 +291,27 @@ export const getRelatedPosts = async (post: PostData) : Promise<PostData[]> => {
     return relatedPostsData;
   }
   return [];
+};
+
+export const deletePost = async (post: PostData) : Promise<void> => {
+  const blogsRef = firestore.collection(blogPostsCollection);
+  const tagsRef = firestore.collection(blogTagsCollection);
+  const batch = firestore.batch();
+  // Borrando post de la colección de post de los tags
+  post.tags?.forEach((tag) => {
+    const tagDoc = tagsRef.doc(tag.toUpperCase());
+    const tagPostsRef = tagDoc.collection('tagPosts');
+    const postTagDoc = tagPostsRef.doc(post.id);
+    batch.delete(postTagDoc);
+  });
+  // Borrando imágenes
+  const deletePostImagesTask = post.post.blocks
+    .filter((block) => block.type === 'image')
+    .map((block: PostBlock) => (block.type === 'image') && deleteImageAsync(
+      `blog/postsImages/${post.author.uid}/images/${block.data.file.name}`,
+    ));
+  const blogDoc = blogsRef.doc(post.id);
+  batch.delete(blogDoc);
+  await batch.commit();
+  await Promise.all(deletePostImagesTask);
 };
