@@ -25,7 +25,7 @@ const BlogEntrieLink : FC<Props> = (props : Props) => {
           </div>
           <div className="blog-entrie-link__description">
             <div className="blog-entrie-link__profile-picture">
-              <Image src={post.author.photoUrl} alt="post 1 author" layout="fill" />
+              <Image src={post.author?.photoUrl || '/img/writer.png'} alt="post 1 author" layout="fill" />
             </div>
             <div className="blog-entrie-link__tag">
               <span>Marketing Leaders (Placeholder para tags)</span>

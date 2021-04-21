@@ -4,7 +4,7 @@ import BlogEntrieLink from './BlogEntrieLink';
 
 const renderBlogLinks = (
   blogPostList: PostData[],
-) : ReactNode[] => blogPostList.map((blog) => <BlogEntrieLink key={`blg-link-${blog.slug}`} post={blog} />);
+) : ReactNode[] => blogPostList?.map((blog) => <BlogEntrieLink key={`blg-link-${blog.slug}`} post={blog} />);
 
 type Props = {
   recomendedBlogPosts: PostData[]

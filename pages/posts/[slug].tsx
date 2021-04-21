@@ -3,8 +3,10 @@ import Head from 'next/head';
 import { FC, useState } from 'react';
 import BlogHead from '../../components/BlogHead';
 import BlogPost from '../../components/BlogPost';
-import BlogPostCommentForm from '../../components/BlogPostCommentForm';
-import { getPostTags, getPublicBlogPostBySlug, getPublicBlogPosts } from '../../lib/repository/blogPosts';
+import PostRecomendations from '../../components/PostsRecomendations';
+import {
+  getPostTags, getPublicBlogPostBySlug, getPublicBlogPosts, getRelatedPosts,
+} from '../../lib/repository/blogPosts';
 import { SerializedBlogPost } from '../../lib/types';
 import { deserializeBlogPost, serializeBlogPost } from '../../lib/utils';
 
@@ -12,11 +14,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { slug } = params;
   try {
     const blogPost = typeof slug === 'string' ? await getPublicBlogPostBySlug(slug) : await getPublicBlogPostBySlug(slug[0]);
+    const relatedBlogPosts = await getRelatedPosts(blogPost);
     const path = blogPost.slug;
     const tags = await getPostTags();
     return {
       props: {
         postData: serializeBlogPost(blogPost),
+        relatedPostsData: relatedBlogPosts.map((relatedPost) => serializeBlogPost(relatedPost)),
         tags,
         path,
       },
@@ -48,13 +52,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 type Props = {
-  postData: SerializedBlogPost;
+  postData: SerializedBlogPost,
+  relatedPostsData: SerializedBlogPost[],
   tags: string[],
 }
 
 const BlogPostPage : FC<Props> = (props: Props) => {
-  const { postData, tags } = props;
+  const { postData, tags, relatedPostsData } = props;
   const [blogPost] = useState(deserializeBlogPost(postData));
+  const [relatedPosts] = useState(relatedPostsData?.map((post) => deserializeBlogPost(post)));
   return (
     (!blogPost) ? <div>Loading...</div> : (
       <main className="main">
@@ -67,7 +73,7 @@ const BlogPostPage : FC<Props> = (props: Props) => {
         </Head>
         <BlogHead tags={tags} />
         <BlogPost postData={blogPost} isPreview={false} />
-        <BlogPostCommentForm />
+        <PostRecomendations recomendedBlogPosts={relatedPosts} />
       </main>
     )
   );

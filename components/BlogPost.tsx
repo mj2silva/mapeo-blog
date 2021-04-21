@@ -25,7 +25,7 @@ const BlogPost : FC<Props> = (props: Props) => {
       </div>
       <div className="blogpost__author">
         <div className="blogpost__author-image">
-          <img src={postData.author.photoUrl} alt="Foto autor" />
+          <img src={postData.author?.photoUrl} alt="Foto autor" />
         </div>
         <div className="blogpost__author-name">
           Por

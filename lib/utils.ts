@@ -22,6 +22,6 @@ export const serializeBlogPost = (blog: PostData) : SerializedBlogPost => ({
 
 export const deserializeBlogPost = (serializedBlog: SerializedBlogPost) : PostData => ({
   ...serializedBlog,
-  createdDate: new Date(serializedBlog.createdDate),
-  updatedDate: new Date(serializedBlog.updatedDate),
+  createdDate: new Date(serializedBlog?.createdDate),
+  updatedDate: new Date(serializedBlog?.updatedDate),
 });

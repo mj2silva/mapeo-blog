@@ -149,7 +149,7 @@ export const getPublicBlogPosts = async () : Promise<PostData[]> => {
   const ref = firestore.collection(blogPostsCollection);
   const query = ref.where('publicado', '==', true)
     .orderBy('fechaDeCreacion', 'desc')
-    .limit(3);
+    .limit(9);
   const posts = await query.get();
   const postsData : PostData[] = [];
   posts.forEach((post) => {
@@ -245,4 +245,26 @@ export const getPostTags = async () : Promise<string[]> => {
   const tagsDocuments = await ref.get();
   tagsDocuments.forEach((tag) => tags.push(tag.id));
   return tags;
+};
+
+export const getRelatedPosts = async (post: PostData) : Promise<PostData[]> => {
+  if (post.tags?.length > 0) {
+    const ref = firestore.collection(blogPostsCollection);
+    const query = ref
+      .where('publicado', '==', true)
+      .where('tags', 'array-contains-any', post.tags)
+      .orderBy('fechaDeCreacion', 'desc')
+      .limit(4);
+    const posts = await query.get();
+    const relatedPostsData : PostData[] = [];
+    posts.forEach((relatedPost) => {
+      if (relatedPost.id !== post.id && relatedPostsData.length < 3) {
+        const data = relatedPost?.data() as ServerPostData;
+        const relatedPostData = mapServerPostToAppPost(data, relatedPost.id);
+        relatedPostsData.push(relatedPostData);
+      }
+    });
+    return relatedPostsData;
+  }
+  return [];
 };
