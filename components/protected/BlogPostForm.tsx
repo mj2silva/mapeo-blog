@@ -13,6 +13,7 @@ import { createSlug } from '../../lib/utils';
 import Spinner, { SpinnerColors } from '../common/Spinner';
 import Editor from './Editor';
 import Metatags from './Metatags';
+import TagsInput, { TagsInputChangeHandler } from './TagsInput';
 
 type Props = {
   postSlug?: string,
@@ -80,6 +81,8 @@ const BlogPostForm : FC<Props> = (props: Props) => {
   const [isLoading, setIsLoading] = useState(true);
   const [formError, setError] = useState(null);
 
+  const [removedTags, setRemovedTags] = useState([]);
+
   const {
     editor, initEditor, holderId, error, save, uploadedImages,
   } = useEditor(user, null, postData.post);
@@ -131,7 +134,7 @@ const BlogPostForm : FC<Props> = (props: Props) => {
       const dataToSave: PostData = { ...postData, post: newPostData, coverPictureUrl };
       setPostData(dataToSave);
       await deleteUnusedImages(initialPostData, dataToSave, uploadedImages, user);
-      if (postData.id) await updateBlogPost(dataToSave.id, dataToSave);
+      if (postData.id) await updateBlogPost(dataToSave.id, dataToSave, removedTags);
       else {
         await createBlogPost(dataToSave);
         router.push(`/internal/posts/${dataToSave.slug}`);
@@ -165,6 +168,16 @@ const BlogPostForm : FC<Props> = (props: Props) => {
     retrieveDataToEdit();
   }, [postSlug, router]);
 
+  const onTagsChange: TagsInputChangeHandler = async (
+    selected, actionMeta,
+  ) : Promise<void> => {
+    if (actionMeta.action === 'remove-value') setRemovedTags((rt) => [...rt, actionMeta.removedValue.value]);
+    setPostData((post) => ({
+      ...post,
+      tags: selected.map((sel) => sel.value),
+    }));
+  };
+
   return (
     <div className="editor">
       { postSlug
@@ -183,6 +196,10 @@ const BlogPostForm : FC<Props> = (props: Props) => {
           <span>Url personalizada (blog.mapeo.pe/post/[tu-url]):</span>
           <input value={postData.slug || ''} onChange={handleChange} type="text" name="slug" />
         </label>
+        <TagsInput
+          onChange={onTagsChange}
+          initialOptions={postData.tags?.map((tag) => ({ label: tag, value: tag }))}
+        />
         <label className="editor__form-input editor__form-input--checkbox" htmlFor="isPublic">
           <span>Publicar</span>
           <input checked={postData.isPublic} onChange={handleCheckedChange} type="checkbox" name="isPublic" />
