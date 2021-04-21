@@ -2,6 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/auth';
 import 'firebase/firestore';
 import 'firebase/storage';
+import 'firebase/analytics';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyCIaCBF3zDOpPxWu52AGiXb_1iZYm-_bJY',
@@ -20,6 +21,7 @@ if (!firebase.apps.length) {
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
 export const storage = firebase.storage();
+export const analitycs = firebase.analytics;
 export const { STATE_CHANGED } = firebase.storage.TaskEvent;
 export const { fromMillis } = firebase.firestore.Timestamp;
 export const { fromDate } = firebase.firestore.Timestamp;

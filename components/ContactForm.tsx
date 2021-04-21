@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   ChangeEventHandler, FC, FormEventHandler, useState,
 } from 'react';
+import { analitycs } from '../lib/firebase';
 import { checkCompanyValid, createNewMeeting } from '../lib/repository/meetings';
 import { MeetingInfo } from '../lib/types';
 import Spinner from './common/Spinner';
@@ -34,10 +35,12 @@ const ContactForm : FC = () => {
     const pixelFormSuccess = async () : Promise<void> => {
       const pixel = await ReactPixel();
       pixel.trackCustom('Formulario lleno', formValues);
+      analitycs().logEvent('Formulario lleno', formValues);
     };
     const pixelFormError = async () : Promise<void> => {
       const pixel = await ReactPixel();
       pixel.trackCustom('Empresa repetida', formValues);
+      // analitycs().logEvent('Empresa repetida', formValues);
     };
     try {
       const isCompanyValid = await checkCompanyValid(formValues.company.toUpperCase());
