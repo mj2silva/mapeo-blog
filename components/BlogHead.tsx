@@ -1,35 +1,26 @@
 import { FC } from 'react';
+import BlogTags from './BlogTags';
 
 type Props = {
   tags?: string[],
+  selectedTag?: string,
+  onTagsChange?: (tags: string[]) => Promise<void> | void
 }
 
 const defaultProps: Partial<Props> = {
   tags: [],
+  selectedTag: null,
+  onTagsChange: null,
 };
 
 const BlogHead: FC<Props> = (props: Props) => {
-  const { tags } = props;
+  const { tags, selectedTag, onTagsChange } = props;
   return (
     <section className="head">
       <div className="head__title">
         <h1>Blog</h1>
       </div>
-      <div className="head__controls">
-        <div className="head__controls-keywords">
-          <h3>Palabras clave</h3>
-          <ul>
-            {
-              tags.map((tag) => (<li className="head__controls-keywords-tag">{tag}</li>))
-            }
-          </ul>
-        </div>
-        <div className="head__controls-search">
-          <form>
-            <input type="search" name="search" id="search" placeholder="Buscar..." />
-          </form>
-        </div>
-      </div>
+      <BlogTags selectedTag={selectedTag} tags={tags} onTagsChange={onTagsChange} />
     </section>
   );
 };

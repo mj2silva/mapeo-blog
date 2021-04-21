@@ -160,6 +160,22 @@ export const getPublicBlogPosts = async () : Promise<PostData[]> => {
   return postsData;
 };
 
+export const getPublicBlogPostsByTag = async (tags: string[]) : Promise<PostData[]> => {
+  const ref = firestore.collection(blogPostsCollection);
+  const query = ref.where('publicado', '==', true)
+    .where('tags', 'array-contains-any', tags)
+    .orderBy('fechaDeCreacion', 'desc')
+    .limit(9);
+  const posts = await query.get();
+  const postsData : PostData[] = [];
+  posts.forEach((post) => {
+    const data = post?.data() as ServerPostData;
+    const postData = mapServerPostToAppPost(data, post.id);
+    postsData.push(postData);
+  });
+  return postsData;
+};
+
 // Delete
 export const deletePost = async (postId : string) : Promise<string> => {
   const promise = new Promise<string>((resolve) => {

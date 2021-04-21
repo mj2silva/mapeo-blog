@@ -2,7 +2,7 @@ import { FC } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { PostData } from '../lib/types';
-import { peruvianDateString } from '../lib/utils';
+import { firsLetterToUpper, peruvianDateString } from '../lib/utils';
 
 type Props = {
   post: Partial<PostData>,
@@ -21,20 +21,20 @@ const BlogEntrieLink : FC<Props> = (props : Props) => {
       <Link href={`/posts/${post.slug}`}>
         <a>
           <div className="blog-entrie-link__image">
-            <Image src={post.coverPictureUrl || '/img/post-blog.png'} alt="Post 1" layout="fill" objectFit="cover" objectPosition="center" />
+            <Image src={post.coverPictureUrl || '/img/post-blog.png'} alt={post.title} layout="fill" objectFit="cover" objectPosition="center" />
           </div>
           <div className="blog-entrie-link__description">
             <div className="blog-entrie-link__profile-picture">
-              <Image src={post.author?.photoUrl || '/img/writer.png'} alt="post 1 author" layout="fill" />
+              <Image src={post.author?.photoUrl || '/img/writer.png'} alt={post.author.name} layout="fill" />
             </div>
             <div className="blog-entrie-link__tag">
               { post.tags?.map((tag, index) => {
                 if (index === post.tags.length - 1) {
-                  return (<span>{tag}</span>);
+                  return (<span key={`be-${tag}`}>{firsLetterToUpper(tag)}</span>);
                 }
                 return (
-                  <span>
-                    {tag}
+                  <span key={`be-${tag}`}>
+                    {firsLetterToUpper(tag)}
                     ,
                     {' '}
                   </span>

@@ -1,14 +1,17 @@
-import { FC, ReactNode } from 'react';
+import {
+  FC, ReactNode, useEffect, useState,
+} from 'react';
 import Head from 'next/head';
 import { GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import BlogEntrieLink from '../components/BlogEntrieLink';
 import ScheduleMeeting from '../components/ScheduleMeeting';
 // import { blogPosts } from '../mock/blogPosts';
-import { getPostTags, getPublicBlogPosts } from '../lib/repository/blogPosts';
+import { getPostTags, getPublicBlogPosts, getPublicBlogPostsByTag } from '../lib/repository/blogPosts';
 import { PostData, SerializedBlogPost } from '../lib/types';
 import { deserializeBlogPost, serializeBlogPost } from '../lib/utils';
 import BlogHead from '../components/BlogHead';
+import Spinner from '../components/common/Spinner';
 
 const renderBlogLinks = (
   blogPostList: PostData[],
@@ -32,22 +35,45 @@ type Props = {
 const Home: FC<Props> = (props: Props) => {
   const { blogPosts, tags } = props;
   const { query } = useRouter();
-  const { tag: selectedTag } = query;
+  const { tag } = query;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [requestedPosts, setRequestedPosts] = useState<PostData[]>(null);
+
+  const onTagsChange = async (selectedTags: string[]): Promise<void> => {
+    setIsLoading(true);
+    const newPosts = await getPublicBlogPostsByTag(selectedTags);
+    setRequestedPosts(newPosts);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    if (tag) onTagsChange([tag.toString().toUpperCase()]);
+  }, [tag]);
+
   return (
     <main className="main">
       <Head>
         <title>Blog - Mapeo</title>
       </Head>
-      <BlogHead tags={tags} />
+      <BlogHead
+        selectedTag={tag?.toString().toUpperCase()}
+        onTagsChange={onTagsChange}
+        tags={tags}
+      />
       <section className="blog-entries">
         <div className="blog-entries__row">
-          { renderBlogLinks(blogPosts?.filter((post) => {
-            if (selectedTag) {
-              return post.tags.includes(selectedTag.toString().toUpperCase());
-            }
-            return true;
-          })
-            .map((post) => deserializeBlogPost(post))) }
+          {
+            (!isLoading && (blogPosts || requestedPosts))
+              ? (
+                renderBlogLinks(
+                  (requestedPosts?.length && requestedPosts)
+                  || (blogPosts)?.map((post) => deserializeBlogPost(post)),
+                )
+              )
+              : (
+                <Spinner />
+              )
+          }
         </div>
         <div className="blog-entries__pagination">
           <ul>

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { FC } from 'react';
 import { PostData } from '../lib/types';
 import PostBlock from './postBlocks/PostBlock';
@@ -38,7 +39,7 @@ const BlogPost : FC<Props> = (props: Props) => {
       </div>
       <div className="blogpost__author">
         <div className="blogpost__author-image">
-          <img src={postData.author?.photoUrl} alt="Foto autor" />
+          <Image src={postData.author?.photoUrl} alt="Foto autor" layout="fill" />
         </div>
         <div className="blogpost__author-name">
           Por

@@ -25,3 +25,12 @@ export const deserializeBlogPost = (serializedBlog: SerializedBlogPost) : PostDa
   createdDate: new Date(serializedBlog?.createdDate),
   updatedDate: new Date(serializedBlog?.updatedDate),
 });
+
+export const firsLetterToUpper = (text: string): string => {
+  const textArray = text.toLowerCase().split(' ');
+  const capitalizedArray = textArray.map((word) => {
+    const firstLetter = word.charAt(0);
+    return word.replace(firstLetter, firstLetter.toUpperCase());
+  });
+  return capitalizedArray.join(' ');
+};
