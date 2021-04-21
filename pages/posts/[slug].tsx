@@ -1,10 +1,11 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { FC, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import BlogHead from '../../components/BlogHead';
 import BlogPost from '../../components/BlogPost';
 import PostRecomendations from '../../components/PostsRecomendations';
+import { pageViewFbPixel } from '../../components/ReactPixel';
 import ScheduleMeeting from '../../components/ScheduleMeeting';
 import {
   getPostTags, getPublicBlogPostBySlug, getPublicBlogPosts, getRelatedPosts,
@@ -64,6 +65,10 @@ const BlogPostPage : FC<Props> = (props: Props) => {
   const [blogPost] = useState(deserializeBlogPost(postData));
   const [relatedPosts] = useState(relatedPostsData?.map((post) => deserializeBlogPost(post)));
   const router = useRouter();
+  useEffect(() => {
+    pageViewFbPixel();
+  }, []);
+
   const handleSelectTag = (selectedTags: string[]) : void => {
     router.push({
       pathname: '/',

@@ -7,6 +7,7 @@ import {
 import { checkCompanyValid, createNewMeeting } from '../lib/repository/meetings';
 import { MeetingInfo } from '../lib/types';
 import Spinner from './common/Spinner';
+import ReactPixel from './ReactPixel';
 
 const ContactForm : FC = () => {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -30,6 +31,14 @@ const ContactForm : FC = () => {
   const handleSubmit : FormEventHandler = async (event) => {
     event.preventDefault();
     setIsSubmitting(true);
+    const pixelFormSuccess = async () : Promise<void> => {
+      const pixel = await ReactPixel();
+      pixel.trackCustom('Formulario lleno', formValues);
+    };
+    const pixelFormError = async () : Promise<void> => {
+      const pixel = await ReactPixel();
+      pixel.trackCustom('Empresa repetida', formValues);
+    };
     try {
       const isCompanyValid = await checkCompanyValid(formValues.company.toUpperCase());
       const isPhoneValid = formValues.phoneNumber.match(new RegExp(/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s./0-9]*$/));
@@ -45,6 +54,7 @@ const ContactForm : FC = () => {
           ...formValues,
           date: new Date(),
         });
+        await pixelFormSuccess();
         setSuccessSubmit(true);
         setIsSubmitting(false);
       } else {
@@ -54,6 +64,7 @@ const ContactForm : FC = () => {
             ...errors,
             company: 'Tu empresa ya ha sido registrada, si deseas más información puedes comunicarte con nosotros a través de nuestro WhatsApp',
           });
+          await pixelFormError();
         }
         if (!isPhoneValid) {
           setErrors({

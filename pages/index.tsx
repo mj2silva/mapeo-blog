@@ -12,6 +12,7 @@ import { PostData, SerializedBlogPost } from '../lib/types';
 import { deserializeBlogPost, serializeBlogPost } from '../lib/utils';
 import BlogHead from '../components/BlogHead';
 import Spinner from '../components/common/Spinner';
+import ReactPixel from '../components/ReactPixel';
 
 const renderBlogLinks = (
   blogPostList: PostData[],
@@ -38,6 +39,13 @@ const Home: FC<Props> = (props: Props) => {
   const { tag } = query;
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [requestedPosts, setRequestedPosts] = useState<PostData[]>(null);
+  useEffect(() => {
+    const initPixel = async () : Promise<void> => {
+      const pixel = await ReactPixel();
+      pixel.pageView();
+    };
+    initPixel();
+  }, []);
 
   const onTagsChange = async (selectedTags: string[]): Promise<void> => {
     setIsLoading(true);
