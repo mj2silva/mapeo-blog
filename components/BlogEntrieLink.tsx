@@ -28,7 +28,18 @@ const BlogEntrieLink : FC<Props> = (props : Props) => {
               <Image src={post.author?.photoUrl || '/img/writer.png'} alt="post 1 author" layout="fill" />
             </div>
             <div className="blog-entrie-link__tag">
-              <span>Marketing Leaders (Placeholder para tags)</span>
+              { post.tags?.map((tag, index) => {
+                if (index === post.tags.length - 1) {
+                  return (<span>{tag}</span>);
+                }
+                return (
+                  <span>
+                    {tag}
+                    ,
+                    {' '}
+                  </span>
+                );
+              }) }
               {' '}
               -
               {' '}

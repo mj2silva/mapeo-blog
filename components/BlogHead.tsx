@@ -20,7 +20,7 @@ const BlogHead: FC<Props> = (props: Props) => {
           <h3>Palabras clave</h3>
           <ul>
             {
-              tags.map((tag) => (<li>{tag}</li>))
+              tags.map((tag) => (<li className="head__controls-keywords-tag">{tag}</li>))
             }
           </ul>
         </div>

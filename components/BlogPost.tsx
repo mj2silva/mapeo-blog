@@ -16,7 +16,20 @@ const BlogPost : FC<Props> = (props: Props) => {
   return (
     <section className={`blogpost__post ${(isPreview) ? 'blogpost__post--preview' : ''}`}>
       <div className="blogpost__tag">
-        <h3>Marketing Leaders</h3>
+        <h3>
+          { postData.tags?.map((tag, index) => {
+            if (index === postData.tags.length - 1) {
+              return (<span>{tag}</span>);
+            }
+            return (
+              <span>
+                {tag}
+                ,
+                {' '}
+              </span>
+            );
+          }) }
+        </h3>
       </div>
       <div className="blogpost__title">
         <h1>

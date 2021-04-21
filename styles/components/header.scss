@@ -11,9 +11,11 @@
 
 @keyframes fadeOut {
   0% {
+    display: flex;
     transform: translateX(0);
   }
   100% {
+    display: flex;
     transform: translateX(100vw);
   }
 }
@@ -88,7 +90,7 @@
   &__menu-close {
     display: none;
     background-color: transparent;
-    color: $black;
+    color: $white;
     @media screen and (max-width: $breakpoint-tablet) {
       display: flex;
       position: absolute;
@@ -116,7 +118,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background-color: $white;
+      background-color: $darkBlue;
       color: $black;
       min-height: 100vh;
       left: -1rem;
@@ -128,37 +130,42 @@
     }
     &--hidden {
       @media screen and (max-width: $breakpoint-tablet) {
-      position: fixed;
-      left: -1rem;
-      right: -1rem;
-      top: -1rem;
-      animation: fadeOut ease .5s;
-      transform: translateX(100vw);
+        position: fixed;
+        left: -1rem;
+        right: -1rem;
+        top: -1rem;
+        animation: fadeOut ease .5s;
+        transform: translateX(100vw);
+        overflow: hidden;
+        color: $black;
+        min-height: 100vh;
+        height: 100vh;
+        padding: 1rem;
+        width: 100%;
       }
     }
     &--mobile {
       @media screen and (max-width: $breakpoint-tablet) {
-      height: 100vh;
-      display: flex;
-      padding: 0;
-      position: fixed;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background-color: $whiteTransparent;
-      overflow: hidden;
-      color: $black;
-      min-height: 100vh;
-      left: -1rem;
-      right: -1rem;
-      top: -1rem;
-      width: 100%;
-      padding: 1rem;
-      z-index: 30;
-      animation: fadeIn ease .5s;
-      & > li {
-        margin: 1rem 0;
-      }
+        height: 100vh;
+        display: flex;
+        position: fixed;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: $darkBlue;
+        overflow: hidden;
+        color: $black;
+        min-height: 100vh;
+        left: -1rem;
+        right: -1rem;
+        top: -1rem;
+        width: 100%;
+        padding: 1rem;
+        z-index: 30;
+        animation: fadeIn ease .5s;
+        & > li {
+          margin: 1rem 0;
+        }
     }
   }
   }
@@ -167,7 +174,6 @@
     cursor: pointer;
     font-weight: 500;
     position: relative;
-    animation: appear ease .5s;
     padding: 1rem;
     font-size: 1.1rem;
     & button {
@@ -191,39 +197,40 @@
       }
     }
     @media screen and (min-width: $breakpoint-tablet) {
-    &--orange:hover, &--orange.navigation__item--active {
-        color: $orange;
+      &--orange:hover, &--orange.navigation__item--active {
+          color: $orange;
+      }
+      &--purple:hover , &--purple.navigation__item--active {
+        color: $softPurple
+      }
+      &--skyblue:hover, &--skyblue.navigation__item--active {
+        color: $skyblue;
+      }
+      &--yellow:hover, &--yellow.navigation__item--active {
+        color: $yellow;
+      }
+      &--violet:hover, &--violet.navigation__item--active {
+        color: $violet;
+      }
     }
-    &--purple:hover , &--purple.navigation__item--active {
-      color: $softPurple
+    @media screen and (max-width: $breakpoint-tablet) {
+      animation: appear ease .5s;
+      &--orange {
+          color: $orange;
+      }
+      &--purple {
+        color: $softPurple
+      }
+      &--skyblue {
+        color: $skyblue;
+      }
+      &--yellow {
+        color: $yellow;
+      }
+      &--violet {
+        color: $violet;
+      }
     }
-    &--skyblue:hover, &--skyblue.navigation__item--active {
-      color: $skyblue;
-    }
-    &--yellow:hover, &--yellow.navigation__item--active {
-      color: $yellow;
-    }
-    &--violet:hover, &--violet.navigation__item--active {
-      color: $violet;
-    }
-  }
-  @media screen and (max-width: $breakpoint-tablet) {
-    &--orange {
-        color: $orange;
-    }
-    &--purple {
-      color: $softPurple
-    }
-    &--skyblue {
-      color: $skyblue;
-    }
-    &--yellow {
-      color: $yellow;
-    }
-    &--violet {
-      color: $violet;
-    }
-  }
     &--active::before {
       content: '· ';
     }
@@ -253,7 +260,7 @@
       border-radius: 9.19px;
       margin-top: .8em;
       position: absolute;
-      background-color: #ffffff;
+      background-color: $white;
       color: $black;
       flex-direction: column;
       padding: .5em 0;

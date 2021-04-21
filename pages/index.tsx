@@ -1,6 +1,7 @@
 import { FC, ReactNode } from 'react';
 import Head from 'next/head';
 import { GetStaticProps } from 'next';
+import { useRouter } from 'next/router';
 import BlogEntrieLink from '../components/BlogEntrieLink';
 import ScheduleMeeting from '../components/ScheduleMeeting';
 // import { blogPosts } from '../mock/blogPosts';
@@ -30,6 +31,8 @@ type Props = {
 
 const Home: FC<Props> = (props: Props) => {
   const { blogPosts, tags } = props;
+  const { query } = useRouter();
+  const { tag: selectedTag } = query;
   return (
     <main className="main">
       <Head>
@@ -38,7 +41,13 @@ const Home: FC<Props> = (props: Props) => {
       <BlogHead tags={tags} />
       <section className="blog-entries">
         <div className="blog-entries__row">
-          { renderBlogLinks(blogPosts.map((post) => deserializeBlogPost(post))) }
+          { renderBlogLinks(blogPosts?.filter((post) => {
+            if (selectedTag) {
+              return post.tags.includes(selectedTag.toString().toUpperCase());
+            }
+            return true;
+          })
+            .map((post) => deserializeBlogPost(post))) }
         </div>
         <div className="blog-entries__pagination">
           <ul>
