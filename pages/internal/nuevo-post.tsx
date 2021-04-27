@@ -1,6 +1,6 @@
 import { FC } from 'react';
-import Editor from '../../components/protected/Editor';
+import BlogPostForm from '../../components/protected/BlogPostForm';
 
-const NuevoPost : FC = () => <Editor />;
+const NuevoPost : FC = () => <BlogPostForm />;
 
 export default NuevoPost;

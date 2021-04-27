@@ -1,220 +1,62 @@
-import { useRouter } from 'next/router';
 import {
-  ChangeEventHandler, FC, FormEventHandler, useContext, useEffect, useState,
+  FC, useEffect, useState,
 } from 'react';
-import {
-  createBlogPost, getBlogPostBySlug, updateBlogPost, uploadImageAsync,
-} from '../../lib/firebase';
-import { PostData } from '../../lib/types';
-import UserContext from '../../lib/userContext';
-import Spinner, { SpinnerColors } from '../common/Spinner';
-import Metatags from './Metatags';
 
-enum LogLevels {
-  ERROR = 'ERROR'
-}
+import { Post, PostData } from '../../lib/types';
+import BlogEntrieLink from '../BlogEntrieLink';
+import BlogPost from '../BlogPost';
+import ToggleButton from '../common/ToggleButton';
 
 type Props = {
-  postSlug?: string,
+  post: PostData,
+  editor: any,
+  initEditor: (post?: Post) => void,
+  holderId: string,
+  savePreview: () => Promise<void>
 }
 
-const defaultProps : Partial<Props> = {
-  postSlug: null,
-};
+const hiddenClassName = 'hidden';
+const editorClassName = 'editorjs';
+const blogPostClassName = 'editorjs';
 
 const Editor : FC<Props> = (props : Props) => {
-  const { postSlug } = props;
-  const { user } = useContext(UserContext);
-  const [editor, setEditor] = useState(null);
-  const [error, setError] = useState(null);
-  const router = useRouter();
-  const [holderId] = useState(new Date().getTime().toString());
-  const [postData, setPostData] = useState<PostData>({
-    authorUId: user.uid,
-    post: {
-      time: new Date(),
-      blocks: null,
-      editorInfo: {
-        version: null,
-      },
-    },
-    slug: '',
-    createdDate: null,
-    isPublic: false,
-    title: '',
-  });
-  const [isLoading, setIsLoading] = useState(true);
-
+  const { post } = props;
+  const {
+    editor, initEditor, holderId, savePreview,
+  } = props;
+  const [isPreview, setIsPreview] = useState(false);
+  // Efecto que inicializa el editor
   useEffect(() => {
-    const getInitialPost = async () : Promise<void> => {
-      if (postSlug) {
-        setIsLoading(true);
-        try {
-          const actualPostData = await getBlogPostBySlug(postSlug);
-          setPostData(actualPostData);
-          setIsLoading(false);
-        } catch (err) {
-          router.push('/internal/nuevo-post');
-        }
-      } else {
-        setIsLoading(false);
-      }
-    };
-    getInitialPost();
-  }, [postSlug, router]);
+    if (editor === null) return initEditor(post.post);
+    return null;
+  }, [editor, initEditor, post]);
 
-  const onSave : FormEventHandler<HTMLFormElement> = async (event) => {
-    event.preventDefault();
-    setIsLoading(true);
-    try {
-      const newData = await editor.save();
-      const dataToSave = {
-        ...postData,
-        post: {
-          time: new Date(newData.time),
-          blocks: newData.blocks,
-          editorInfo: {
-            version: newData.version,
-          },
-        },
-      };
-      setPostData(dataToSave);
-      if (postData.id) {
-        await updateBlogPost(dataToSave.id, dataToSave);
-      } else {
-        await createBlogPost(dataToSave);
-        router.push(`/internal/posts/${dataToSave.slug}`);
-      }
-      await editor.render(newData);
-      setError(null);
-    } catch (err) {
-      setError(err.message);
-    }
-    setIsLoading(false);
+  const handlePreviewChange = async () : Promise<void> => {
+    if (savePreview) await savePreview();
+    setIsPreview(!isPreview);
   };
-
-  const handleChange : ChangeEventHandler<HTMLInputElement> = async (event) => {
-    setPostData({
-      ...postData,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  const handleCheckedChange : ChangeEventHandler<HTMLInputElement> = async (event) => {
-    setPostData({
-      ...postData,
-      [event.target.name]: event.target.checked,
-    });
-  };
-
-  useEffect(() => {
-    const initEditor = async () : Promise<void> => {
-      if (editor === null) {
-        if (!isLoading) {
-          setIsLoading(true);
-          const EditorJS = (await (import('@editorjs/editorjs'))).default;
-          const Header = (await import('@editorjs/header')).default;
-          const Quotes = (await import('@editorjs/quote')).default;
-          const List = (await import('@editorjs/list')).default;
-          const Embed = (await import('@editorjs/embed')).default;
-          const Image = (await import('../../lib/ImageEditor/bundle')).default;
-
-          const newEditor = new EditorJS({
-            autofocus: true,
-            holder: holderId,
-            logLevel: LogLevels.ERROR,
-            tools: {
-              header: {
-                class: Header,
-                inlineToolbar: true,
-              },
-              quote: {
-                class: Quotes,
-                config: {
-                  quotePlaceholder: 'Ingresa una cita de autor',
-                  captionPlaceholder: 'Ingresa la fuente y/o autor',
-                },
-              },
-              list: List,
-              embed: {
-                class: Embed,
-                inlineToolbar: true,
-                config: {
-                  services: {
-                    youtube: true,
-                  },
-                },
-              },
-              image: {
-                class: Image,
-                config: {
-                  buttonContent: 'Selecciona una imagen',
-                  captionPlaceholder: 'Ingresa el título de la imagen',
-                  uploader: {
-                    uploadByFile: async (file : File) => {
-                      const downloadUrl = await uploadImageAsync(file, `blog/postsImages/${user.uid}/images`);
-                      return {
-                        success: 1,
-                        file: { url: downloadUrl },
-                      };
-                    },
-                  },
-                },
-              },
-            },
-            placeholder: 'Empieza a editar tu post!',
-            data: {
-              time: postData.post.time.getTime(),
-              blocks: postData.post.blocks,
-            },
-            onReady: () => {
-              setIsLoading(false);
-            },
-          });
-
-          setEditor(newEditor);
-        }
-      }
-    };
-    if (initEditor) initEditor();
-  }, [postData, isLoading, editor, holderId, user]);
 
   return (
     <>
-      <div className="editor">
-        { postSlug
-          ? <Metatags title={`Editar post | ${postData.title}`} />
-          : <Metatags title={`Nuevo post | ${user.username}`} />}
-        <form onSubmit={onSave} className="editor__form">
-          <label className="editor__form-input" htmlFor="title">
-            <span>Título del post:</span>
-            <input value={postData.title || ''} onChange={handleChange} type="text" name="title" required />
-          </label>
-          <label className="editor__form-input" htmlFor="slug">
-            <span>Url personalizada (blog.mapeo.pe/post/[tu-url]):</span>
-            <input value={postData.slug || ''} onChange={handleChange} type="text" name="slug" />
-          </label>
-          <label className="editor__form-input editor__form-input--checkbox" htmlFor="isPublic">
-            <span>Publicar</span>
-            <input onChange={handleCheckedChange} type="checkbox" name="isPublic" />
-          </label>
-          <div id={holderId} className="editorjs" />
-          { error && (
-          <div className="editor__error">
-            Hubo un error al guardar el post:
-            {' '}
-            {error}
-          </div>
-          ) }
-          { (isLoading)
-            ? <div className="loading-button"><Spinner color={SpinnerColors.yellow} width={20} height={20} /></div>
-            : <button disabled={isLoading} className="editor__button" type="submit">Guardar post</button>}
-        </form>
+      <div className="editor__toggle">
+        Cambiar a
+        {' '}
+        {(isPreview) ? 'Editor' : 'Vista previa' }
+        <ToggleButton name="preview" onCheckedChange={handlePreviewChange} />
+      </div>
+      <div id={holderId} className={isPreview ? hiddenClassName : editorClassName} />
+      <div className={!isPreview ? hiddenClassName : blogPostClassName}>
+        { post && (
+          <>
+            <BlogPost postData={post} isPreview />
+            <hr />
+            <h3 style={{ margin: '1rem 10%' }}>Vista previa del enlace:</h3>
+            <BlogEntrieLink post={post} isPreview />
+          </>
+        ) }
       </div>
     </>
   );
 };
-
-Editor.defaultProps = defaultProps;
 
 export default Editor;

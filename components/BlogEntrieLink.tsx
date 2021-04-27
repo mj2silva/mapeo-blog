@@ -1,28 +1,49 @@
 import { FC } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import BlogPost from '../types/BlogPost';
+import { PostData } from '../lib/types';
+import { firsLetterToUpper, peruvianDateString } from '../lib/utils';
 
 type Props = {
-  post: Partial<BlogPost>
+  post: Partial<PostData>,
+  isPreview?: boolean,
 }
 
+const defaultProps: Partial<Props> = {
+  isPreview: false,
+};
+
 const BlogEntrieLink : FC<Props> = (props : Props) => {
-  const { post } = props;
+  const { post, isPreview } = props;
+
   return (
-    <div className="blog-entrie-link">
+    <div className={`blog-entrie-link ${isPreview ? 'blog-entrie-link--preview' : ''}`}>
       <Link href={`/posts/${post.slug}`}>
         <a>
           <div className="blog-entrie-link__image">
-            <Image src={post.coverImageUrl} alt="Post 1" layout="fill" objectFit="cover" objectPosition="center" />
+            <Image src={post.coverPictureUrl || '/img/post-blog.png'} alt={post.title} layout="fill" objectFit="cover" objectPosition="center" />
           </div>
           <div className="blog-entrie-link__description">
-            <img src={post.author.photoUrl} alt="post 1 author" width="50" height="50" />
+            <div className="blog-entrie-link__profile-picture">
+              <Image src={post.author?.photoUrl || '/img/writer.png'} alt={post.author.name} layout="fill" />
+            </div>
             <div className="blog-entrie-link__tag">
-              <span>Marketing Leaders (Placeholder para tags)</span>
+              { post.tags?.map((tag, index) => {
+                if (index === post.tags.length - 1) {
+                  return (<span key={`be-${tag}`}>{firsLetterToUpper(tag)}</span>);
+                }
+                return (
+                  <span key={`be-${tag}`}>
+                    {firsLetterToUpper(tag)}
+                    ,
+                    {' '}
+                  </span>
+                );
+              }) }
               {' '}
               -
-              <span className="blog-entrie-link__date">{post.publicationDate.toISOString()}</span>
+              {' '}
+              <span className="blog-entrie-link__date">{peruvianDateString(post.createdDate || new Date())}</span>
             </div>
             <div className="blog-entrie-link__title">
               <h3>
@@ -40,5 +61,7 @@ const BlogEntrieLink : FC<Props> = (props : Props) => {
     </div>
   );
 };
+
+BlogEntrieLink.defaultProps = defaultProps;
 
 export default BlogEntrieLink;

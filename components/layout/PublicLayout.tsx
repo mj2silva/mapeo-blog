@@ -4,7 +4,7 @@ import Header from './Header';
 import PageProvider from './PageProvider';
 
 type Props = {
-  children: ReactNode
+  children: ReactNode,
 }
 
 const PublicLayout : FC<Props> = (props : Props) => {

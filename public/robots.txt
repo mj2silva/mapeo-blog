@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /internal/
+Disallow: /animations/
+Disallow: /fonts/
+
+Sitemap: https://web.mapeo.pe/sitemap.xml

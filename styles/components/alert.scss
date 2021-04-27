@@ -1,0 +1,62 @@
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 100;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 100;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.alert {
+  &__title {
+    font-family: $gilroy;
+    margin: 0;
+    color: $white;
+  }
+  &__text {
+    font-family: $gilroy;
+    color: $white;
+  }
+  &__popup {
+    background-color: $darkBlue !important;
+    border-radius: 15px !important;
+  }
+  &__button {
+    padding: .5rem;
+    min-width: 5rem;
+    cursor: pointer;
+    margin: 0 .5rem;
+    color: $white;
+    border-radius: 5px;
+    font-family: $gilroy;
+    font-weight: 600;
+    font-size: 1.2rem;
+    &--confirm {
+      background-color: $skyblue;
+      &:hover {
+        background-color: $skyblueHover;
+      }
+    }
+    &--deny {
+      background-color: $red;
+      &:hover {
+        background-color: red;
+      }
+    }
+  }
+  &__fade-in {
+    animation: fade-in ease .5s forwards;
+  }
+  &__fade-out {
+    animation: fade-out ease .5s forwards;
+  }
+}

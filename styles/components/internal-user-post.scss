@@ -1,6 +1,6 @@
 .user-posts {
   width: 80%;
-  margin: 0 auto;
+  margin: 0 auto 1rem auto;
   &__error {
     color: $red;
     text-align: center;
@@ -23,6 +23,21 @@
       }
     }
   }
+  &__loader {
+    align-self: center;
+    text-align: center;
+  }
+  &__button {
+    background-color: $skyblue;
+    min-width: 10rem;
+    padding: .5rem;
+    font-family: inherit;
+    color: $white;
+    cursor: pointer;
+    &:hover {
+      background-color: $skyblueHover;
+    }
+  }
 }
 .user-post {
   border: solid 1px $darkBlue;
@@ -30,8 +45,8 @@
   border-radius: 10px;
   margin: 1rem auto;
   display: block;
-  cursor: pointer;
   transition-duration: 500ms;
+  cursor: default;
   &:hover &__header {
     background-color: $blueHover;
   }
@@ -62,14 +77,24 @@
   &__date {
     font-size: .8rem;
   }
-  &__delete {
-    background-color: $red;
-    color: $white;
-    cursor: pointer;
+  &__control {
     padding: .3rem .5rem;
     font-size: 1.4rem;
-    &:hover {
-      background-color: red;
+    cursor: pointer;
+    color: $white;
+    min-width: 2rem;
+    margin: 0 .5rem;
+    font-size: 1rem;
+    height: 2rem;
+    &--edit {
+      background-color: $skyblue;
+      &:hover { background-color: $blue;}
+    }
+    &--delete {
+      background-color: $red;
+      &:hover {
+        background-color: red;
+      }
     }
   }
 }

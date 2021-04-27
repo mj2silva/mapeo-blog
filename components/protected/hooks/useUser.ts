@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import {
-  useCallback,
-  useEffect, useState,
+  useCallback, useEffect, useState,
 } from 'react';
 import { auth, firestore } from '../../../lib/firebase';
 import { AuthError, FirebaseUser, User } from '../../../lib/types';

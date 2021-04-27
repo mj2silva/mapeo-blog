@@ -1,13 +1,13 @@
 import { FC, ReactNode } from 'react';
-import BlogPost from '../types/BlogPost';
+import { PostData } from '../lib/types';
 import BlogEntrieLink from './BlogEntrieLink';
 
 const renderBlogLinks = (
-  blogPostList: BlogPost[],
-) : ReactNode[] => blogPostList.map((blog) => <BlogEntrieLink key={`blg-link-${blog.slug}`} post={blog} />);
+  blogPostList: PostData[],
+) : ReactNode[] => blogPostList?.map((blog) => <BlogEntrieLink key={`blg-link-${blog.slug}`} post={blog} />);
 
 type Props = {
-  recomendedBlogPosts: BlogPost[]
+  recomendedBlogPosts: PostData[]
 }
 
 const PostRecomendations : FC<Props> = ({ recomendedBlogPosts } : Props) => (

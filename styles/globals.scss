@@ -1,12 +1,18 @@
+
 @import "./common/common.scss";
 
-// Commons
+// Common components
 @import "./components/common/button.scss";
+@import "./components/common/link.scss";
+@import "./components/common/toggle.scss";
 @import "./components/section.scss";
 @import "./components/loading-screen.scss";
 
 // Components
 @import "./components/schedule-meeting.scss";
+
+// Alert
+@import "./components/alert.scss";
 
 // Landing
 @import "./components/header.scss";
@@ -119,4 +125,9 @@ input[type="search"]::-webkit-search-results-decoration {
   align-content: center;
   justify-content: center;
   min-height: 2rem;
+}
+
+.hidden {
+  display: none;
+  position: absolute;
 }

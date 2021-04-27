@@ -1,0 +1,100 @@
+.checkcross {
+	label:before {
+		content: none;
+	}
+	.check {
+		border-radius: 50%;
+    width: 2.5em;
+    height: 2.5em;
+    position: absolute;
+    background: $yellow;
+    transition: .4s ease;
+    top: 4.5px;
+    left: 4.5px;
+		&:before, &:after {
+			height: 4px;
+			border-radius: 10px;
+			background: #fff;
+			transition: .4s ease;
+		}
+		&:before {
+			width: 25px;
+			transform: rotate(-45deg) translate(-6px, 20px);
+		}
+		&:after {
+			width: 10px;
+			transform: rotate(45deg) translate(20px, 11px);
+		}
+	}
+}
+
+.toggle {
+	position: relative;
+	display: inline-block;
+  vertical-align: baseline;
+}
+
+.label--checked {
+	.check {
+		left: 68px;
+		transform: rotate(360deg);
+		background: $yellowHover;
+		&:before {
+			width: 27px;
+			transform: rotate(-45deg) translate(-8px, 18px);
+    
+		}
+		&:after {
+			width: 27px;
+    	transform: rotate(45deg) translate(18px, 8px);
+		}
+	}
+}
+.toggle-wrapper {
+	overflow: hidden;
+	position: relative;
+  & * {
+    box-sizing: border-box;
+	&:before, &:after {
+		content: '';
+		position: absolute;
+	}
+  }
+}
+
+.toggle-input {
+	height: 40px;
+	left: 0;
+  width: 100%;
+  right: 0;
+	opacity: 0;
+	position: absolute;
+	top: 0;
+  cursor: pointer;
+  box-sizing: border-box;
+  z-index: 1;
+}
+
+.toggle-item {
+	width: 7em;
+	background: #2e394d;
+	height: 3em;
+	display: inline-block;
+	border-radius: 50px;
+  margin-left: 1rem;
+	position: relative;
+	transition: all .3s ease;
+	transform-origin: 20% center;
+	cursor: pointer;
+	&:before {
+		display: block;
+		transition: all .2s ease;
+		width: 2.3em;
+    height: 2.3em;
+		top: .25em;
+		left: .25em;
+    border-radius: 2em;
+    border: 2px solid $yellow;
+		transition: .3s ease;
+	}
+}

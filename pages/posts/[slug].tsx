@@ -1,20 +1,82 @@
+import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { FC, useEffect, useState } from 'react';
+import BlogHead from '../../components/BlogHead';
+import BlogPost from '../../components/BlogPost';
 import PostRecomendations from '../../components/PostsRecomendations';
-import { blogPosts, recomendedBlogPosts } from '../../mock/blogPosts';
-import BlogPost from '../../types/BlogPost';
+import { pageViewFbPixel } from '../../components/ReactPixel';
+import ScheduleMeeting from '../../components/ScheduleMeeting';
+import {
+  getPostTags, getPublicBlogPostBySlug, getPublicBlogPosts, getRelatedPosts,
+} from '../../lib/repository/blogPosts';
+import { SerializedBlogPost } from '../../lib/types';
+import { deserializeBlogPost, serializeBlogPost } from '../../lib/utils';
 
-const BlogPostPage : FC = () => {
-  const [blogPost, setBlogPost] = useState<BlogPost>(null);
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const { slug } = params;
+  try {
+    const blogPost = typeof slug === 'string' ? await getPublicBlogPostBySlug(slug) : await getPublicBlogPostBySlug(slug[0]);
+    const relatedBlogPosts = await getRelatedPosts(blogPost);
+    const path = blogPost.slug;
+    const tags = await getPostTags();
+    return {
+      props: {
+        postData: serializeBlogPost(blogPost),
+        relatedPostsData: relatedBlogPosts.map((relatedPost) => serializeBlogPost(relatedPost)),
+        tags,
+        path,
+      },
+      revalidate: 5000,
+    };
+  } catch (err) {
+    return {
+      props: {
+        postData: null,
+      },
+      revalidate: 600,
+    };
+  }
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  try {
+    const posts = await getPublicBlogPosts();
+    const paths = posts.map((post) => ({
+      params: { slug: post.slug },
+    }));
+    return {
+      paths,
+      fallback: 'blocking',
+    };
+  } catch (err) {
+    return null;
+  }
+};
+
+type Props = {
+  postData: SerializedBlogPost,
+  relatedPostsData: SerializedBlogPost[],
+  tags: string[],
+}
+
+const BlogPostPage : FC<Props> = (props: Props) => {
+  const { postData, tags, relatedPostsData } = props;
+  const [blogPost] = useState(deserializeBlogPost(postData));
+  const [relatedPosts] = useState(relatedPostsData?.map((post) => deserializeBlogPost(post)));
   const router = useRouter();
-  const { slug } = router.query;
-
   useEffect(() => {
-    const loadedBlogPost = blogPosts.filter((blog) => blog.slug === slug)[0];
-    setBlogPost(loadedBlogPost);
-  }, [slug]);
+    pageViewFbPixel();
+  }, []);
 
+  const handleSelectTag = (selectedTags: string[]) : void => {
+    router.push({
+      pathname: '/',
+      query: {
+        tag: selectedTags[0],
+      },
+    });
+  };
   return (
     (!blogPost) ? <div>Loading...</div> : (
       <main className="main">
@@ -25,86 +87,10 @@ const BlogPostPage : FC = () => {
             - Mapeo
           </title>
         </Head>
-        <section className="head">
-          <div className="head__title">
-            <h1>Blog</h1>
-          </div>
-          <div className="head__controls">
-            <div className="head__controls-keywords">
-              <h3>Palabras clave</h3>
-              <ul>
-                <li>Marketing</li>
-                <li>Leads</li>
-                <li>Estrategia</li>
-              </ul>
-            </div>
-            <div className="head__controls-search">
-              <form>
-                <input type="search" name="search" id="search" placeholder="Buscar..." />
-              </form>
-            </div>
-          </div>
-        </section>
-        <section className="blogpost__post">
-          <div className="blogpost__tag">
-            <h3>Marketing Leaders</h3>
-          </div>
-          <div className="blogpost__title">
-            <h1>
-              { blogPost.title }
-            </h1>
-          </div>
-          <div className="blogpost__author">
-            <div className="blogpost__author-image">
-              <img src={blogPost.author.photoUrl} alt="Foto autor" />
-            </div>
-            <div className="blogpost__author-name">
-              Por
-              {' '}
-              <strong>{ blogPost.author.name }</strong>
-            </div>
-            <div className="blogpost__date">{ blogPost.publicationDate.toUTCString() }</div>
-          </div>
-          <div className="blogpost__abstract">
-            <summary>
-              <p>
-                { blogPost.abstract }
-              </p>
-            </summary>
-          </div>
-          <div className="blogpost__table-of-contents">
-            <div className="blogpost__table-of-contents-title">
-              <h3>Índice de contenido</h3>
-            </div>
-            <div className="blogpost__table-of-contents-list">
-              <ul>
-                <li><a href="#">1. ¿Cuál es la mejor estrategia para captar clientes tan grandes y exclusivos?</a></li>
-                <li><a href="#">2. Los “test” en inbound marketing, una táctica efectiva para generar leads y posicionamiento de marca</a></li>
-                <li><a href="#">3. ¿Cuándo invertir en publicidad en prensa especializada y cuándo no?</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="blogpost__content">
-            { (blogPost.entrie.parragraphs.map((parragraph, index) => (
-              <p
-                key={parragraph.slice(0, 3) + index.toString()}
-              >
-                {parragraph}
-              </p>
-            ))) }
-          </div>
-          <div className="blogpost__comment-form">
-            <form>
-              <h2>¿Y tú qué opinas? ¡Déjanos aquí tus comentarios!</h2>
-              <input className="blogpost__comment-form-input" type="text" placeholder="Nombre" />
-              <input className="blogpost__comment-form-input" type="text" placeholder="Apellido" />
-              <input className="blogpost__comment-form-input" type="email" placeholder="Email" />
-              <textarea className="blogpost__comment-form-input" placeholder="Mensaje" />
-              <button className="button" type="submit">Enviar</button>
-            </form>
-          </div>
-        </section>
-        <PostRecomendations recomendedBlogPosts={recomendedBlogPosts} />
+        <BlogHead onTagsChange={handleSelectTag} tags={tags} />
+        <BlogPost postData={blogPost} isPreview={false} />
+        <PostRecomendations recomendedBlogPosts={relatedPosts} />
+        <ScheduleMeeting />
       </main>
     )
   );
