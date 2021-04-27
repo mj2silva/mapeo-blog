@@ -66,7 +66,11 @@ const UserPosts : FC = () => {
           : <Spinner />
       }
       {
-        !isLoading && <GetMorePostsButton getMorePosts={getMorePosts} />
+        (!error
+          && !isLoading
+          && (posts?.length > 0)
+          && <GetMorePostsButton getMorePosts={getMorePosts} />
+        )
       }
       { (!error && !isLoading && (posts?.length === 0 || !posts))
          && (

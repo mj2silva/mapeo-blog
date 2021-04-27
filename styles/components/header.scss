@@ -104,6 +104,10 @@
 }
 
 .navigation {
+  margin-right: 3rem;
+  @media screen and (max-width: $breakpoint-laptop) {
+    margin-right: 0;
+  }
   @media screen and (max-width: $breakpoint-tablet) {
     position: absolute;
     width: 100%;

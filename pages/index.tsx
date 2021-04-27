@@ -6,7 +6,6 @@ import { GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
 import BlogEntrieLink from '../components/BlogEntrieLink';
 import ScheduleMeeting from '../components/ScheduleMeeting';
-// import { blogPosts } from '../mock/blogPosts';
 import { getPostTags, getPublicBlogPosts, getPublicBlogPostsByTag } from '../lib/repository/blogPosts';
 import { PostData, SerializedBlogPost } from '../lib/types';
 import { deserializeBlogPost, serializeBlogPost } from '../lib/utils';
@@ -24,7 +23,7 @@ export const getStaticProps : GetStaticProps = async () => {
   const tags = await getPostTags();
   return {
     props: { blogPosts: serializedBlogPosts, tags },
-    revalidate: 10,
+    revalidate: 600,
   };
 };
 
@@ -90,11 +89,6 @@ const Home: FC<Props> = (props: Props) => {
         <div className="blog-entries__pagination">
           <ul>
             <li><a href="#">1</a></li>
-            <li><a href="#">2</a></li>
-            <li><a href="#">3</a></li>
-            <li><a href="#">4</a></li>
-            <li><a href="#">...</a></li>
-            <li><a href="#">30</a></li>
           </ul>
         </div>
       </section>
