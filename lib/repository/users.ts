@@ -22,23 +22,23 @@ export const updateUserName = async (user: User, username: string) : Promise<voi
   const newUsernameRef = firestore.collection('blogUsernames').doc(username);
   const batch = firestore.batch();
   batch.set(newUsernameRef, { uid: user.uid });
-  batch.delete(userNameRef);
-  batch.update(userRef, { username });
+  if (user.username) batch.delete(userNameRef);
+  batch.set(userRef, { username }, { merge: true });
   await batch.commit();
 };
 
 export const updateDisplayName = async (user: User, displayName: string) : Promise<void> => {
   const userRef = firestore.doc(`blogUsers/${user.uid}`);
-  await userRef.update({
+  await userRef.set({
     displayName,
-  });
+  }, { merge: true });
 };
 
 export const updateCompanyPosition = async (
   user: User, companyPosition: string,
 ) : Promise<void> => {
   const userRef = firestore.doc(`blogUsers/${user.uid}`);
-  await userRef.update({
+  await userRef.set({
     companyPosition,
-  });
+  }, { merge: true });
 };

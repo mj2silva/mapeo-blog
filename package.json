@@ -37,6 +37,7 @@
     "react-firebase-hooks": "^3.0.3",
     "react-html-parser": "^2.0.2",
     "react-select": "^4.3.0",
+    "react-toastify": "^7.0.4",
     "sweetalert2": "^10.15.7",
     "sweetalert2-react-content": "^3.3.1"
   },

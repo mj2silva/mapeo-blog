@@ -2,6 +2,9 @@ import {
   ChangeEventHandler, FC, FormEventHandler, useContext, useState,
 } from 'react';
 
+import { toast } from 'react-toastify';
+import Spinner, { SpinnerColors } from '../../common/Spinner';
+
 import { STATE_CHANGED } from '../../../lib/firebase';
 import { updateUserProfilePicture } from '../../../lib/repository/users';
 import { uploadImage } from '../../../lib/repository/files';
@@ -27,9 +30,25 @@ const ProfilePicture : FC = () => {
       task.then(async () => {
         const newDownloadUrl = await ref.getDownloadURL();
         await updateUserProfilePicture(newDownloadUrl, user.uid);
+        toast.success('Se actualizó tu foto de perfil correctamente', {
+          position: 'top-center',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
         setUploading(false);
       }).catch((err) => {
         setError(err.message);
+        toast.error('Hubo un error al actualizar los datos, intenta nuevamente más tarde', {
+          position: 'top-center',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
         setUploading(false);
       });
     }
@@ -45,7 +64,9 @@ const ProfilePicture : FC = () => {
         <div className="configuration__form-label">Cambiar foto de perfil</div>
         <input name="profilePicture" type="file" onChange={handleChange} />
       </label>
-      <button disabled={uploading} className="configuration__form-button" type="submit">Guardar</button>
+      <button disabled={uploading} className="configuration__form-button" type="submit">
+        { uploading ? <Spinner width={10} height={10} color={SpinnerColors.yellow} /> : 'Guardar' }
+      </button>
       {uploading && (
       <div>
         Subiendo:
