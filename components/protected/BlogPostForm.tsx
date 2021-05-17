@@ -3,6 +3,7 @@ import {
 } from 'react';
 import { useRouter } from 'next/router';
 
+import { toast } from 'react-toastify';
 import { deleteImageAsync, uploadImageAsync } from '../../lib/repository/files';
 import { createBlogPost, getBlogPostBySlug, updateBlogPost } from '../../lib/repository/blogPosts';
 import { PostData, User } from '../../lib/types';
@@ -139,9 +140,25 @@ const BlogPostForm : FC<Props> = (props: Props) => {
         await createBlogPost(dataToSave);
         router.push(`/internal/posts/${dataToSave.slug}`);
       }
+      toast.success('¡Tu post se guardó correctamente!', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       setError(null);
     } catch (err) {
       setError(err.message);
+      toast.error('Hubo un error al guardar tu post, intenta nuevamente más tarde', {
+        position: 'top-center',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     } finally {
       setIsLoading(false);
     }
