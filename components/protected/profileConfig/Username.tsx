@@ -77,7 +77,7 @@ const Username : FC = () => {
           <div className="configuration__form-label">Nombre de usuario:</div>
           <input type="text" name="username" onChange={handleChange} value={formValue} />
         </label>
-        <button disabled={isLoading} className="configuration__form-button" type="submit">
+        <button disabled={isLoading || !isValid} className="configuration__form-button" type="submit">
           { isLoading ? <Spinner width={10} height={10} color={SpinnerColors.yellow} /> : 'Guardar' }
         </button>
         { (!isValid && formValue !== user.username)
